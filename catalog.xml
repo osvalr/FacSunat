@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/D:/FacturaElectronica-Modificado/FacturaElectronica/../../XSD/common/CCTS_CCT_SchemaModule-2.0.xsd" uri="xml-resources/jaxb/AmountType/CCTS_CCT_SchemaModule-2.0.xsd"/>
+    <system systemId="http://localhost:8080/WSEjecutor/NewWebService?Tester" uri="xml-resources/web-service-references/NewWebService_Tester/wsdl/localhost_8080/WSEjecutor/NewWebService.tester"/>
+    <system systemId="http://localhost:8080/WSEjecutor/NewWebService?wsdl" uri="xml-resources/web-service-references/NewWebService/wsdl/localhost_8080/WSEjecutor/NewWebService.wsdl"/>
+    <system systemId="http://localhost:8080/WSEjecutor/NewWebService?xsd=1" uri="xml-resources/web-service-references/NewWebService/wsdl/localhost_8080/WSEjecutor/NewWebService.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/WSTest/billService?wsdl" uri="xml-resources/web-service-references/billService/wsdl/localhost_8080/WSTest/billService.wsdl"/>
+    <system systemId="http://corei5:8080/WSTest/billService?wsdl" uri="xml-resources/web-service-references/billService/wsdl/corei5_8080/WSTest/billService.wsdl"/>
+    <system systemId="https://www.sunat.gob.pe:443/ol-ti-itcpgem-beta/billService?wsdl" uri="xml-resources/web-service-references/billService/wsdl/www.sunat.gob.pe_443/ol-ti-itcpgem-beta/billService.wsdl"/>
+    <system systemId="https://www.sunat.gob.pe/ol-ti-itcpgem-beta/billService?wsdl" uri="xml-resources/web-service-references/billService/wsdl/www.sunat.gob.pe/ol-ti-itcpgem-beta/billService.wsdl"/>
+    <system systemId="https://www.sunat.gob.pe:443/ol-ti-itcpgem-beta/billService?wsdl=1" uri="xml-resources/web-service-references/billService/wsdl/www.sunat.gob.pe_443/ol-ti-itcpgem-beta/billService.wsdl_1.wsdl"/>
+    <system systemId="https://www.sunat.gob.pe:443/ol-ti-itcpgem-beta/billService?xsd=1" uri="xml-resources/web-service-references/billService/wsdl/www.sunat.gob.pe_443/ol-ti-itcpgem-beta/billService.xsd_1.xsd"/>
+</catalog>
