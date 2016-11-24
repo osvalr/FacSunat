@@ -18,8 +18,8 @@
     </target>
     <target name="wsimport-client-billService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/billService"/>
-        <property name="wsdl-billService" location="xml-resources/web-service-references/billService/wsdl/e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/billService" destdir="${build.generated.dir}/jax-wsCache/billService" wsdl="${wsdl-billService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl" xnocompile="true" xendorsed="true">
+        <property name="wsdl-billService" location="xml-resources/web-service-references/billService/wsdl/www.sunat.gob.pe/ol-ti-itcpgem-sqa/billService.wsdl"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/billService" destdir="${build.generated.dir}/jax-wsCache/billService" wsdl="${wsdl-billService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="https://www.sunat.gob.pe/ol-ti-itcpgem-sqa/billService?wsdl" xnocompile="true" xendorsed="true">
             <depends file="${wsdl-billService}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/billService"/>
         </wsimport>

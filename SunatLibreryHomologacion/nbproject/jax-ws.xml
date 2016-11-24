@@ -3,8 +3,8 @@
   <services/>
   <clients>
     <client name="billService">
-      <wsdl-url>https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl</wsdl-url>
-      <local-wsdl-file>e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.wsdl</local-wsdl-file>
+      <wsdl-url>https://www.sunat.gob.pe/ol-ti-itcpgem-sqa/billService?wsdl</wsdl-url>
+      <local-wsdl-file>www.sunat.gob.pe/ol-ti-itcpgem-sqa/billService.wsdl</local-wsdl-file>
       <package-name>pe.gob.sunat.servicio.registro.comppago.factura.gem.service</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
@@ -22,7 +22,7 @@
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>wsdlLocation</wsimport-option-name>
-          <wsimport-option-value>https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl</wsimport-option-value>
+          <wsimport-option-value>https://www.sunat.gob.pe/ol-ti-itcpgem-sqa/billService?wsdl</wsimport-option-value>
         </wsimport-option>
         <wsimport-option>
           <wsimport-option-name>xnocompile</wsimport-option-name>

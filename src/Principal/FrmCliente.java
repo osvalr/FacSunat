@@ -28,9 +28,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-public class  FrmCliente extends javax.swing.JInternalFrame{
+public class  FrmCliente extends javax.swing.JInternalFrame   {
     
     public JDesktopPane panelPrincila;
     public String m_Codigo=""; 
@@ -1084,6 +1086,8 @@ public class  FrmCliente extends javax.swing.JInternalFrame{
     public void setEdireccion(EDireccion _edireccion) {
         this._edireccion = _edireccion;
     }
+
+    
 
   
 }
