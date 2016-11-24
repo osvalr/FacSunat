@@ -676,17 +676,17 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                         _generarxml.setLsdetfactura(_lsdetallefac);
                          if(_generarxml.FillXml())//_generarxml.LlenarXMltoEntity())
                         {   
-//                            if(!_generarxml.Envio())
-//                                JOptionPane.showMessageDialog(null, "ResponseCode :"+_generarxml.errResponseCode+ " Detalle :" +_generarxml.errDescription, "Respuesta Sunat.",JOptionPane.WARNING_MESSAGE);
-//                            else
-//                            {
+                            if(!_generarxml.Envio())
+                                JOptionPane.showMessageDialog(null, "ResponseCode :"+_generarxml.errResponseCode+ " Detalle :" +_generarxml.errDescription, "Respuesta Sunat.",JOptionPane.WARNING_MESSAGE);
+                            else
+                            {
                                 JOptionPane.showMessageDialog(null, " Sunat :" +_generarxml.errDescription ,"Respuesta",JOptionPane.INFORMATION_MESSAGE);
                                 _efactura.setFac_cestado(_parametro.getPar_cestado());
                                 if(_bfactura.AccionGuardarCompleto(_efactura,_lsdetallefac,_parametro.getNum_ncodigo(),_edireccion,_eplaca,_ecliente))
                                 {
                                     JOptionPane.showMessageDialog(null, "Se guardado correctamente.", "Factura",JOptionPane.INFORMATION_MESSAGE);
                                 }
-//                            }
+                            }
                         }
                         _lsdetallefac.clear();
                         m_Tipoinstancia=InstanciaForm.UNCHANGUE;   
