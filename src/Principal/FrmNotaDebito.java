@@ -23,7 +23,7 @@ import Negocio.BRelacionadoDocumento;
 import Negocio.BTablasSolas;
 import Utilidad.DisplayValue;
 import Utilidad.Formato;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -681,7 +681,7 @@ public class FrmNotaDebito extends javax.swing.JInternalFrame {
         try {
             _erelaciondocumento = new ERelacionadoDocumento();
             //fecha
-                    _erelaciondocumento.setM_instancia(InstancaEntidad.NEW);
+                    _erelaciondocumento.setM_instancia(InstanciaEntidad.NEW);
                     DisplayValue _valor=(DisplayValue)cmbdocumento.getSelectedItem();
                     _erelaciondocumento.setDoc_ccodigo(_valor.getValueMenber());
                     _valor=(DisplayValue)cmbnotadebito.getSelectedItem();
@@ -705,10 +705,10 @@ public class FrmNotaDebito extends javax.swing.JInternalFrame {
                     //_erelaciondocu.setRel_cdescripcion(m_Codigo);
                     for(int i=0;i<=_lsefacturadetalle.size()-1;i++)
                     {
-                        if(_lsefacturadetalle.get(i).getM_instancia()==InstancaEntidad.UNCHANGUE)
+                        if(_lsefacturadetalle.get(i).getM_instancia()==InstanciaEntidad.UNCHANGUE)
                         {
                             ERelacionadoDocumentoDetalle _erelaciondocumentodetalle= new ERelacionadoDocumentoDetalle();
-                            _erelaciondocumentodetalle.setM_instancia(InstancaEntidad.NEW);
+                            _erelaciondocumentodetalle.setM_instancia(InstanciaEntidad.NEW);
                             _erelaciondocumentodetalle.setArt_ncodigo(_lsefacturadetalle.get(i).getArt_ncodigo());
                             _erelaciondocumentodetalle.setRde_ccantidad(_lsefacturadetalle.get(i).getDfa_ccantidad());
                             _erelaciondocumentodetalle.setRde_fvalorunitario(_lsefacturadetalle.get(i).getDfa_fvalorunitario());

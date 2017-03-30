@@ -64,7 +64,6 @@ import oasisNamesSpecificationUblSchemaXsdCommonAggregateComponents2.TaxCategory
 import oasisNamesSpecificationUblSchemaXsdCommonAggregateComponents2.TaxSchemeType;
 import oasisNamesSpecificationUblSchemaXsdCommonAggregateComponents2.TaxSubtotalType;
 import oasisNamesSpecificationUblSchemaXsdCommonAggregateComponents2.TaxTotalType;
-import oasisNamesSpecificationUblSchemaXsdCommonBasicComponents2.ChargeTotalAmountType;
 import oasisNamesSpecificationUblSchemaXsdCommonBasicComponents2.DocumentCurrencyCodeType;
 import oasisNamesSpecificationUblSchemaXsdCommonBasicComponents2.InvoiceTypeCodeType;
 import oasisNamesSpecificationUblSchemaXsdCommonBasicComponents2.InvoicedQuantityType;
@@ -112,6 +111,7 @@ public class GenerarXmml {
     InputStream inputxml;
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private Formato _fmd;
+    public String rutaXmlCompleta;
     public GenerarXmml()
     {
         _fmd = new Formato();
@@ -325,8 +325,8 @@ public class GenerarXmml {
     {
         try
         {
-            rutaXml= "d:\\Facturacion\\"+_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".xml";
-            rutazip="d:\\Facturacion\\"+_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".zip";
+            rutaXml= Ruta.rutaFolderDocumento +_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".xml";
+            rutazip=Ruta.rutaFolderDocumento+_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".zip";
             fa= new File(rutaXml);
         }
         catch(Exception e)
@@ -407,6 +407,7 @@ public class GenerarXmml {
              ZipOutputStream _mizip = new ZipOutputStream(fos);
              ZipEntry ze= new ZipEntry(fa.getName());
              _mizip.putNextEntry(ze);
+             rutaXmlCompleta=rutaXml;
              FileInputStream in = new FileInputStream(rutaXml);
              int _tamanio;
              while((_tamanio=in.read(buffer))>0)
@@ -463,484 +464,484 @@ public class GenerarXmml {
         return _estado;
     }
     
-    public boolean LlenarXMltoEntity()
-    {
-         try
-            {
-             rutaXml= "d:\\Facturacion\\"+_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".xml";
-             rutazip="d:\\Facturacion\\"+_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".zip";
-             fa= new File(rutaXml);
-             d= InvoiceDocument.Factory.newInstance();             
-             f = d.addNewInvoice();
-              XmlCursor _cursor=   f.newCursor();  
-             _cursor.toNextToken();
-             _cursor.insertNamespace(null,"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
-             _cursor.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
-             _cursor.insertNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
-             _cursor.insertNamespace("ext","urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2");
-             /////////////////////////////////////////////////////////TAG EXTRAS ////////////////////////////////
-             _cursor.insertNamespace("ccts","urn:oasis:names:specification:ubl:schema:xsd:CoreComponentParameters-2");
-             _cursor.insertNamespace("qdt","urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2");
-             _cursor.insertNamespace("stat","urn:oasis:names:specification:ubl:schema:xsd:DocumentStatusCode-1.0");
-             _cursor.insertNamespace("udt","urn:un:unece:uncefact:data:draft:UnqualifiedDataTypesSchemaModule:2");
-             //////////////////////////////////////////////////////////FIN DE TAG EXTRAS///////////////////////////
-             _cursor.insertNamespace("ds","http://www.w3.org/2000/09/xmldsig#");
-             _cursor.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");
-             d.documentProperties().setEncoding("ISO-8859-1");
-             d.documentProperties().setStandalone(false);  
-//             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-             f.addNewIssueDate().setStringValue(dateFormat.format(_efactura.getFac_dfechaemision()));             
-             UBLExtensionsType _ubltype= f.addNewUBLExtensions();
-             ////////////////////////////////////////////////////LA SIGUIENTE LINEA SOLO SE DECLARA LA FIRMA DIGITAL/////////////////////////////
-             _nodoFirma =_ubltype.addNewUBLExtension().addNewExtensionContent();
-             _ubltype.addNewUBLExtension().addNewExtensionContent();
-             ////////////////////////FIN DE LA LINEA DE FIRMA DIGITAL////////////////////////////////////////////////////////////////////////////             
-             f.addNewUBLVersionID().setStringValue("2.0");/////////////////////////////////////////////////VERSION DEL ESQUEMA UBL -NO MODIFICAR ESTATICO
-             f.addNewCustomizationID().setStringValue("1.0");/////////////////////////////////////////////VERSION DE LA ESTRUCTURA DEL COCUMENTO  -NO MODIFICAR ESTATICO
-             f.addNewID().setStringValue(_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero());/////////////////////////////////////////////////////SERIE Y NUMERO-VARIABLE
-             InvoiceTypeCodeType _typcode= f.addNewInvoiceTypeCode();
-            _typcode.setStringValue(_efactura.getDoc_ccodigo());//////////////////////////////////////////////////////////////
-             DocumentCurrencyCodeType _doctype=f.addNewDocumentCurrencyCode();/////////////////////////TIPO MONEDA EN QUE SE EMITE FACTURA -VARIABLE
-             _doctype.setStringValue(_efactura.getMon_ccodigo());
-             //------------------------------------------------------------GUIA REMISION------------------------------------------------------
-             DocumentReferenceType _docref=f.addNewDespatchDocumentReference();
-             _docref.addNewID().setStringValue("F001-1");
-             _docref.addNewDocumentTypeCode().setStringValue("09");
-             DocumentReferenceType _docaddref =f.addNewAdditionalDocumentReference();
-             _docaddref.addNewID().setStringValue("0000");
-             _docaddref.addNewDocumentTypeCode().setStringValue("01");
-             //----------------------------------------------------------EMISOR----------------------------------------------------------------
-             SignatureType _sigtype=f.addNewSignature();
-             _sigtype.addNewID().setStringValue("IDSignKG");
-             PartyType _party=_sigtype.addNewSignatoryParty();
-             _party.addNewPartyIdentification().addNewID().setStringValue(getEempresa().getEmp_cruc());
-             _party.addNewPartyName().addNewName().setStringValue(getEempresa().getEmp_cnombre());             
-             AttachmentType _atttype=_sigtype.addNewDigitalSignatureAttachment();
-             _atttype.addNewExternalReference().addNewURI().setStringValue("#signatureKG");             
-             SupplierPartyType _supptye= f.addNewAccountingSupplierParty();
-             _supptye.addNewCustomerAssignedAccountID().setStringValue(getEempresa().getEmp_cruc());
-             _supptye.addNewAdditionalAccountID().setStringValue(getEempresa().getDoi_ccodigo());             
-             PartyType _aprtype=_supptye.addNewParty();
-             _aprtype.addNewPartyName().addNewName().setStringValue(".");
-             AddressType _addtype=_aprtype.addNewPostalAddress();
-             _addtype.addNewID().setStringValue(getEempresa().getCodigoubigeo());//ubigeo
-             _addtype.addNewStreetName().setStringValue(getEempresa().getDireccionsucursal());
-             _addtype.addNewCitySubdivisionName().setStringValue(getEempresa().getDistrito());
-             _addtype.addNewCityName().setStringValue(getEempresa().getDepartamento());
-             _addtype.addNewCountrySubentity().setStringValue(getEempresa().getProvincia());
-             _addtype.addNewDistrict().setStringValue(getEempresa().getDistrito());
-             _addtype.addNewCountry().addNewIdentificationCode().setStringValue("PE");
-             PartyLegalEntityType _legaenty=_aprtype.addNewPartyLegalEntity();
-             _legaenty.addNewRegistrationName().setStringValue(getEempresa().getEmp_cnombre());
-              //--------------------------------------------------------------------------------ADQUIRIENTE---------------------------------------------                                              
-             CustomerPartyType _custype= f.addNewAccountingCustomerParty();
-             _custype.addNewCustomerAssignedAccountID().setStringValue(getEcliente().getCli_cnumerodoc());
-             _custype.addNewAdditionalAccountID().setStringValue(getEcliente().getCoi_ccodigo());
-             PartyType _adquiriente=_custype.addNewParty();
-             _adquiriente.addNewPartyLegalEntity().addNewRegistrationName().setStringValue(getEcliente().getCli_crazon());
-             //------------------------------------------------------IMPUESTOS GLOBALES-------------------------------------------------------
-             TaxTotalType _taxto =f.addNewTaxTotal();
-             TaxAmountType _taxamounttypecliente=_taxto.addNewTaxAmount();
-             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypecliente.setStringValue(String.valueOf(_efactura.getFac_igv()));
-             TaxSubtotalType _taxsubtype= _taxto.addNewTaxSubtotal();
-             _taxamounttypecliente=_taxsubtype.addNewTaxAmount();
-             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypecliente.setStringValue(String.valueOf(_efactura.getFac_igv()));
-             TaxSchemeType _schematype=_taxsubtype.addNewTaxCategory().addNewTaxScheme();
-             _schematype.addNewID().setStringValue("1000");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
-             _schematype.addNewName().setStringValue("IGV");
-             _schematype.addNewTaxTypeCode().setStringValue("VAT");////////////////////////////////////FIN CATALOGO 05
-             
-             //------------------------------------------------------------------------------------ISC
-             TaxTotalType _taxtoISC =f.addNewTaxTotal();
-             TaxAmountType _taxamounttypeclienteISC=_taxtoISC.addNewTaxAmount();
-             _taxamounttypeclienteISC.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypeclienteISC.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalisc())));
-             TaxSubtotalType _taxsubtypeISC= _taxtoISC.addNewTaxSubtotal();
-             _taxamounttypeclienteISC=_taxsubtypeISC.addNewTaxAmount();
-             _taxamounttypeclienteISC.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypeclienteISC.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalisc())));
-             _schematype=_taxsubtypeISC.addNewTaxCategory().addNewTaxScheme();
-             _schematype.addNewID().setStringValue("2000");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
-             _schematype.addNewName().setStringValue("ISC");
-             _schematype.addNewTaxTypeCode().setStringValue("EXC");////////////////////////////////////FIN CATALOGO 05
-             //------------------------------------------------------------------------------------OTROS
-             TaxTotalType _taxtootrsotri =f.addNewTaxTotal();
-             TaxAmountType _taxamounttypeclienteotrotri=_taxtootrsotri.addNewTaxAmount();
-             _taxamounttypeclienteotrotri.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypeclienteotrotri.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalotrostributos())));
-             TaxSubtotalType _taxsubtypeotrotri= _taxtootrsotri.addNewTaxSubtotal();
-             _taxamounttypeclienteotrotri=_taxsubtypeotrotri.addNewTaxAmount();
-             _taxamounttypeclienteotrotri.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypeclienteotrotri.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalotrostributos())));
-             _schematype=_taxsubtypeotrotri.addNewTaxCategory().addNewTaxScheme();
-             _schematype.addNewID().setStringValue("9999");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
-             _schematype.addNewName().setStringValue("OTROS TRIBUTOS");
-             _schematype.addNewTaxTypeCode().setStringValue("OTH");////////////////////////////////////FIN CATALOGO 05
-             //------------------------------------------------------------------------------------------------------------------
-             MonetaryTotalType _legalmonetarytotal= f.addNewLegalMonetaryTotal();            
-             PayableAmountType _payableamount=_legalmonetarytotal.addNewPayableAmount();
-             _payableamount.setCurrencyID(CurrencyCodeContentType.PEN);//-------------------------------------------------Moneda total a pagar
-             _payableamount.setStringValue(""+(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotal())));
-             //-----------------------------------------------------------ITEM FACTURA----------------------------------------------------
-             //------------------------------------------------------------DETALLE--------------------------------------------
-             for (int i=0;i<=_lsdetfactura.size()-1;i++)
-             {
-                     InvoiceLineType _invoiceline=f.addNewInvoiceLine();
-                     _invoiceline.addNewID().setStringValue(""+(i+1));/////////////////////////////////////NUMERO ORDE DEL ITEM
-                     InvoicedQuantityType _quantitytype =_invoiceline.addNewInvoicedQuantity();
-                     _quantitytype.setUnitCode(UnitCodeContentType.CS);//////////////////////////////UNIDAD MEDIDA
-                     _quantitytype.setStringValue(""+_lsdetfactura.get(i).getDfa_ccantidad());
-                     LineExtensionAmountType _extamounttype=  _invoiceline.addNewLineExtensionAmount();
-                     _extamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-                     _extamounttype.setStringValue(""+_fmd.Farmat2DosDecimales(_lsdetfactura.get(i).getDfa_fvalorsubtotal()));//----------------------------------CANTIDAD UNIDAD X ITEM
-                     ////////////////////////////VALORES UNITARIOS////////////////
-                     PricingReferenceType _preref =_invoiceline.addNewPricingReference();
-                     PriceType _conditionaltype=_preref.addNewAlternativeConditionPrice();
-                     PriceAmountType _priceamounttype=_conditionaltype.addNewPriceAmount();
-                     _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-                     _priceamounttype.setStringValue(""+ _fmd.Farmat2DosDecimales(_lsdetfactura.get(i).getDfa_fvalorventa()));//(_lsdetfactura.get(i).getDfa_fvalorunitario()+_lsdetfactura.get(i).getDfa_fvaloritemigv()));///////////////////////////////////////MONTO DEL VALOR UNITARIO
-                     _conditionaltype.addNewPriceTypeCode().setStringValue("01");////////////////////CODIGO VALOR UNITARIO : CATALOGO 16
-                     ////////////IMPORTE TOTAL DE UN TIPO PARTICULAR DE IMPUESTO//////////////////////////////////////////////
-                     TaxTotalType _taxtotalfinal= _invoiceline.addNewTaxTotal();
-                     TaxAmountType _taxamounttype=_taxtotalfinal.addNewTaxAmount();
-                     _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-                     _taxamounttype.setStringValue(""+_fmd.Farmat2DosDecimales((_lsdetfactura.get(i).getDfa_fvaloritemigv())));////////////////////////////////////////TOTAL IMPORTE         
-                     TaxSubtotalType _subtotalfinal=_taxtotalfinal.addNewTaxSubtotal();
-                     _taxamounttype=_subtotalfinal.addNewTaxAmount();
-                     _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-                     _taxamounttype.setStringValue(""+_fmd.Farmat2DosDecimales((_lsdetfactura.get(i).getDfa_fvaloritemigv())));
-                     TaxCategoryType _taxcategoriatype=_subtotalfinal.addNewTaxCategory();
-                     _taxcategoriatype.addNewTaxExemptionReasonCode().setStringValue(""+_lsdetfactura.get(i).getPve_ctipoafectacion());///////////10 CATALOGO 07 CODIGO DE TIPO DE AFECTACIO DEL IGV
-//                     _taxcategoriatype.addNewTierRange().setStringValue("02");//-----------------------Opcional
-                     TaxSchemeType _taxchemetype=_taxcategoriatype.addNewTaxScheme();
-                     _taxchemetype.addNewID().setStringValue("1000");///////////////////////////////////ID
-                     _taxchemetype.addNewName().setStringValue("IGV");
-                     _taxchemetype.addNewTaxTypeCode().setStringValue("VAT");
-                     ///////////////////ITEM//////////////////////////////////////////
-                     ItemType _itemtype=_invoiceline.addNewItem();
-                     _itemtype.addNewDescription().setStringValue(""+_lsdetfactura.get(i).getArt_cdescripcion());
-                     _itemtype.addNewSellersItemIdentification().addNewID().setStringValue(""+_lsdetfactura.get(i).getArt_ncodarticulo());
-                     PriceType _typepreci=_invoiceline.addNewPrice();
-                     _priceamounttype=_typepreci.addNewPriceAmount();
-                     _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-                     _priceamounttype.setStringValue(""+_fmd.Farmat2DosDecimales(_lsdetfactura.get(i).getDfa_fvalorunitario()));
-             }
-             //------------------------------------------------------------FIN DETALLE-----------------------------------------
-             
-             
-             //-------------------------------------------------------Informacion Adicional--------------------------------------
-             AdditionalInformationDocument _infodoc=AdditionalInformationDocument.Factory.newInstance();
-             XmlCursor _cursor2= _infodoc.newCursor();
-             _cursor2.toNextToken();
-             _cursor2.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
-             _cursor2.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");             
-             _addtypeinfo=_infodoc.addNewAdditionalInformation();
-             AdditionalMonetaryTotalType   _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-             _typemonetaryaddinfo.addNewID().setStringValue("1001");///////////////////////////////CASO 1001
-             PayableAmountType _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-             _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue(""+_efactura.getFac_fimportesubtotal());
-            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-            _typemonetaryaddinfo.addNewID().setStringValue("1002");//////////////////////////////////CASO 1002
-            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue(""+_efactura.getFac_ftotalinafecto());
-            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-            _typemonetaryaddinfo.addNewID().setStringValue("1003");//////////////////////////////////CASO 1003
-            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue(""+_efactura.getFac_ftotalexonerado());
-            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-            _typemonetaryaddinfo.addNewID().setStringValue("1004");//////////////////////////////////CASO 1004
-            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue("0.0");
-             //-------------------------------------------------------------------XML----------------------------------------
-             DocumentBuilderFactory dbf= DocumentBuilderFactory.newInstance();
-             DocumentBuilder db=null;
-             Document docinvoice=null;
-             Document docinfoadd=null;
-             db= dbf.newDocumentBuilder();
-             docinvoice =db.parse(d.newInputStream());
-             docinfoadd=db.parse(_infodoc.newInputStream());
-             Node _nodeAdd = docinvoice.importNode(docinfoadd.getElementsByTagName("sac:AdditionalInformation").item(0), true);
-             Node ndListdoc =docinvoice.getElementsByTagName("ext:ExtensionContent").item(0);
-             ndListdoc.appendChild(_nodeAdd);
-             TransformerFactory tFactory = TransformerFactory.newInstance();
-             Transformer transformer = tFactory.newTransformer();
-             transformer.setOutputProperty(OutputKeys.INDENT, "yes");            
-             DOMSource source = new DOMSource(docinvoice);             
-             StreamResult result = new StreamResult(new StringWriter());
-             transformer.transform(source, result); 
-             ///inpustream
-             ByteArrayOutputStream _salidaxml= new ByteArrayOutputStream();
-             Result outtarge= new StreamResult(_salidaxml);
-             TransformerFactory.newInstance().newTransformer().transform(source, outtarge);
-             inputxml=new ByteArrayInputStream(_salidaxml.toByteArray());
-//             Writer output = new BufferedWriter(new FileWriter("D:\\15072016-3.xml"));
-//             String xmlOutput = result.getWriter().toString();  
-//             output.write(xmlOutput);
-//             output.close();
-//----------------VERSION ANTIGUA FUNCIONA
-//             if(fa.isFile())
-//                 fa.delete();
-//             fa.createNewFile();                         
-//             d.save(fa); 
-//----------------FIN VERSION ANTIGUA
-            GenerarFirma();
-            //---------------------------------------------GENERACION DE ARCHIVO ZIP  ----------------------------------------------------
-             fa2= new File(rutazip);//////ZIP
-             if(fa2.isFile())
-                 fa2.delete();
-             //fa.createNewFile();
-                byte[] buffer =new byte[(int)fa.length()];
-                FileOutputStream fos= new FileOutputStream(rutazip);
-                ZipOutputStream _mizip = new ZipOutputStream(fos);
-                ZipEntry ze= new ZipEntry(fa.getName());
-                _mizip.putNextEntry(ze);
-                FileInputStream in = new FileInputStream(rutaXml);
-                int _tamanio;
-                while((_tamanio=in.read(buffer))>0)
-                    _mizip.write(buffer, 0, _tamanio);                
-                _mizip.closeEntry();
-                _mizip.close();
-                fos.close();
-                _estado=true;
-            }
-            catch(Exception e)
-            {
-                _estado=false;
-                System.out.println("Error creando zip:"+e.getMessage());
-            }
-            finally{
-                System.out.println("Generaro Xml correcto...");
-            }              
-            return _estado;
-    }
-    public boolean LlenarXMl()//ejeplo de carga xml estatico
-    {
-        
-         try
-            {
-             d= InvoiceDocument.Factory.newInstance();             
-             f = d.addNewInvoice();
-              XmlCursor _cursor=   f.newCursor();  
-             _cursor.toNextToken();
-             _cursor.insertNamespace(null,"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
-             _cursor.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
-             _cursor.insertNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
-             _cursor.insertNamespace("ext","urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2");
-             /////////////////////////////////////////////////////////TAG EXTRAS ////////////////////////////////
-             _cursor.insertNamespace("ccts","urn:oasis:names:specification:ubl:schema:xsd:CoreComponentParameters-2");
-             _cursor.insertNamespace("qdt","urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2");
-             _cursor.insertNamespace("stat","urn:oasis:names:specification:ubl:schema:xsd:DocumentStatusCode-1.0");
-             _cursor.insertNamespace("udt","urn:un:unece:uncefact:data:draft:UnqualifiedDataTypesSchemaModule:2");
-             //////////////////////////////////////////////////////////FIN DE TAG EXTRAS///////////////////////////
-             _cursor.insertNamespace("ds","http://www.w3.org/2000/09/xmldsig#");
-             _cursor.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");
-             d.documentProperties().setEncoding("ISO-8859-1");
-             d.documentProperties().setStandalone(false);            
-             f.addNewIssueDate().setStringValue("2016-07-15");             
-             UBLExtensionsType _ubltype= f.addNewUBLExtensions();
-             ////////////////////////////////////////////////////LA SIGUIENTE LINEA SOLO SE DECLARA LA FIRMA DIGITAL/////////////////////////////
-             _nodoFirma =_ubltype.addNewUBLExtension().addNewExtensionContent();
-             _ubltype.addNewUBLExtension().addNewExtensionContent();
-             ////////////////////////FIN DE LA LINEA DE FIRMA DIGITAL////////////////////////////////////////////////////////////////////////////             
-             f.addNewUBLVersionID().setStringValue("2.0");/////////////////////////////////////////////////VERSION DEL ESQUEMA UBL -NO MODIFICAR ESTATICO
-             f.addNewCustomizationID().setStringValue("1.0");/////////////////////////////////////////////VERSION DE LA ESTRUCTURA DEL COCUMENTO  -NO MODIFICAR ESTATICO
-             f.addNewID().setStringValue("F001-01");/////////////////////////////////////////////////////SERIE Y NUMERO-VARIABLE
-             InvoiceTypeCodeType _typcode= f.addNewInvoiceTypeCode();
-            _typcode.setStringValue("01");//////////////////////////////////////////////////////////////
-             DocumentCurrencyCodeType _doctype=f.addNewDocumentCurrencyCode();/////////////////////////TIPO MONEDA EN QUE SE EMITE FACTURA -VARIABLE
-             _doctype.setStringValue("PEN");
-             //------------------------------------------------------------GUIA REMISION------------------------------------------------------
-             DocumentReferenceType _docref=f.addNewDespatchDocumentReference();
-             _docref.addNewID().setStringValue("010101");
-             _docref.addNewDocumentTypeCode().setStringValue("01");
-             DocumentReferenceType _docaddref =f.addNewAdditionalDocumentReference();
-             _docaddref.addNewID().setStringValue("0000");
-             _docaddref.addNewDocumentTypeCode().setStringValue("01");
-             //----------------------------------------------------------EMISOR----------------------------------------------------------------
-             SignatureType _sigtype=f.addNewSignature();
-             _sigtype.addNewID().setStringValue("IDSignKG");
-             PartyType _party=_sigtype.addNewSignatoryParty();
-             _party.addNewPartyIdentification().addNewID().setStringValue("20456047212");
-             _party.addNewPartyName().addNewName().setStringValue("DigitalBox");             
-             AttachmentType _atttype=_sigtype.addNewDigitalSignatureAttachment();
-             _atttype.addNewExternalReference().addNewURI().setStringValue("#signatureKG");             
-             SupplierPartyType _supptye= f.addNewAccountingSupplierParty();
-             _supptye.addNewCustomerAssignedAccountID().setStringValue("20456047212");
-             _supptye.addNewAdditionalAccountID().setStringValue("6");             
-             PartyType _aprtype=_supptye.addNewParty();
-             _aprtype.addNewPartyName().addNewName().setStringValue("...");
-             AddressType _addtype=_aprtype.addNewPostalAddress();
-             _addtype.addNewID().setStringValue("040104");//ubigeo
-             _addtype.addNewStreetName().setStringValue("AV. ALFONSO UGARTE 913 E' 19 URB. LA LIBERTAD 4 CDRAS ARRIBA DE PLAZA LAS AMERICAS");
-             _addtype.addNewCitySubdivisionName().setStringValue("Cerro colorado");
-             _addtype.addNewCityName().setStringValue("AREQUIPA");
-             _addtype.addNewCountrySubentity().setStringValue("AREQUIPA");
-             _addtype.addNewDistrict().setStringValue("CERRO COLORADO");
-             _addtype.addNewCountry().addNewIdentificationCode().setStringValue("PE");
-             PartyLegalEntityType _legaenty=_aprtype.addNewPartyLegalEntity();
-             _legaenty.addNewRegistrationName().setStringValue("DIGITAL BOX PERU SAC.");
-              //--------------------------------------------------------------------------------ADQUIRIENTE---------------------------------------------                                              
-             CustomerPartyType _custype= f.addNewAccountingCustomerParty();
-             _custype.addNewCustomerAssignedAccountID().setStringValue("20228985237");
-             _custype.addNewAdditionalAccountID().setStringValue("6");
-             PartyType _adquiriente=_custype.addNewParty();
-             _adquiriente.addNewPartyLegalEntity().addNewRegistrationName().setStringValue("DANIEL TRAVIEZO");
-             //------------------------------------------------------IMPUESTOS GLOBALES-------------------------------------------------------
-             TaxTotalType _taxto =f.addNewTaxTotal();
-             TaxAmountType _taxamounttypecliente=_taxto.addNewTaxAmount();
-             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypecliente.setStringValue("26361.55");
-             TaxSubtotalType _taxsubtype= _taxto.addNewTaxSubtotal();
-             _taxamounttypecliente=_taxsubtype.addNewTaxAmount();
-             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttypecliente.setStringValue("26361.55");
-             TaxSchemeType _schematype=_taxsubtype.addNewTaxCategory().addNewTaxScheme();
-             _schematype.addNewID().setStringValue("1000");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
-             _schematype.addNewName().setStringValue("IGV");
-             _schematype.addNewTaxTypeCode().setStringValue("VAT");////////////////////////////////////FIN CATALOGO 05
-             MonetaryTotalType _montotal= f.addNewLegalMonetaryTotal();
-             //------------------------------------------------TOTAL  A PAGAR DE LA FACTURA Y CARGOS-------------------------------
-             ChargeTotalAmountType _charguetotalamount =_montotal.addNewChargeTotalAmount();
-             _charguetotalamount.setCurrencyID(CurrencyCodeContentType.PEN);////IMPORTE TOTAL DE LOS CARGOS APLICADOS AL TOTAL  DE LA FACTURA
-             _charguetotalamount.setStringValue("30.50");             
-             PayableAmountType _amounttype=_montotal.addNewPayableAmount();
-             _amounttype.setCurrencyID(CurrencyCodeContentType.PEN);////////////MONEDA E IMPORTE TOTAL A PAGAR
-             _amounttype.setStringValue("30.50");
-             //-----------------------------------------------------------ITEM FACTURA----------------------------------------------------
-             InvoiceLineType _invoiceline=f.addNewInvoiceLine();
-             _invoiceline.addNewID().setStringValue("1");/////////////////////////////////////NUMERO ORDE DEL ITEM
-             InvoicedQuantityType _quantitytype =_invoiceline.addNewInvoicedQuantity();
-             _quantitytype.setUnitCode(UnitCodeContentType.CS);//////////////////////////////UNIDAD MEDIDA
-             _quantitytype.setStringValue("300.0");
-             LineExtensionAmountType _extamounttype=  _invoiceline.addNewLineExtensionAmount();
-             _extamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-             _extamounttype.setStringValue("172890.0");////////////////////////////////////////////CANTIDAD UNIDAD X ITEM
-             ////////////////////////////VALORES UNITARIOS////////////////
-             PricingReferenceType _preref =_invoiceline.addNewPricingReference();
-             PriceType _conditionaltype=_preref.addNewAlternativeConditionPrice();
-             PriceAmountType _priceamounttype=_conditionaltype.addNewPriceAmount();
-             _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-             _priceamounttype.setStringValue("18.75");///////////////////////////////////////MONTO DEL VALOR UNITARIO
-             _conditionaltype.addNewPriceTypeCode().setStringValue("01");////////////////////CODIGO VALOR UNITARIO
-             ////////////IMPORTE TOTAL DE UN TIPO PARTICULAR DE IMPUESTO//////////////////////////////////////////////
-             TaxTotalType _taxtotalfinal= _invoiceline.addNewTaxTotal();
-             TaxAmountType _taxamounttype=_taxtotalfinal.addNewTaxAmount();
-             _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttype.setStringValue("8745.0");////////////////////////////////////////TOTAL IMPORTE         
-             TaxSubtotalType _subtotalfinal=_taxtotalfinal.addNewTaxSubtotal();
-             _taxamounttype=_subtotalfinal.addNewTaxAmount();
-             _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-             _taxamounttype.setStringValue("8745.0");
-             TaxCategoryType _taxcategoriatype=_subtotalfinal.addNewTaxCategory();
-             _taxcategoriatype.addNewTaxExemptionReasonCode().setStringValue("10");
-             _taxcategoriatype.addNewTierRange().setStringValue("02");
-             TaxSchemeType _taxchemetype=_taxcategoriatype.addNewTaxScheme();
-             _taxchemetype.addNewID().setStringValue("1000");///////////////////////////////////ID
-             _taxchemetype.addNewName().setStringValue("IGV");
-             _taxchemetype.addNewTaxTypeCode().setStringValue("VAT");
-             ///////////////////ITEM//////////////////////////////////////////
-             ItemType _itemtype=_invoiceline.addNewItem();
-             _itemtype.addNewDescription().setStringValue("Arros");
-             _itemtype.addNewSellersItemIdentification().addNewID().setStringValue("01");
-             PriceType _typepreci=_invoiceline.addNewPrice();
-             _priceamounttype=_typepreci.addNewPriceAmount();
-             _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
-             _priceamounttype.setStringValue("678.0");
-             //-------------------------------------------------------Informacion Adicional--------------------------------------
-             AdditionalInformationDocument _infodoc=AdditionalInformationDocument.Factory.newInstance();
-             XmlCursor _cursor2= _infodoc.newCursor();
-             _cursor2.toNextToken();
-             _cursor2.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
-             _cursor2.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");             
-             _addtypeinfo=_infodoc.addNewAdditionalInformation();
-             AdditionalMonetaryTotalType   _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-             _typemonetaryaddinfo.addNewID().setStringValue("1001");///////////////////////////////CASO 1001
-             PayableAmountType _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-             _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue("3456.58");
-            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-            _typemonetaryaddinfo.addNewID().setStringValue("1002");//////////////////////////////////CASO 1002
-            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue("0.0");
-            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-            _typemonetaryaddinfo.addNewID().setStringValue("1003");//////////////////////////////////CASO 1003
-            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue("0.0");
-            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
-            _typemonetaryaddinfo.addNewID().setStringValue("1004");//////////////////////////////////CASO 1004
-            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
-            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
-            _addpayamounttypeinfo.setStringValue("0.0");
-             //-------------------------------------------------------------------XML----------------------------------------
-             DocumentBuilderFactory dbf= DocumentBuilderFactory.newInstance();
-             DocumentBuilder db=null;
-             Document docinvoice=null;
-             Document docinfoadd=null;
-             db= dbf.newDocumentBuilder();
-             docinvoice =db.parse(d.newInputStream());
-             docinfoadd=db.parse(_infodoc.newInputStream());
-             Node _nodeAdd = docinvoice.importNode(docinfoadd.getElementsByTagName("sac:AdditionalInformation").item(0), true);
-             Node ndListdoc =docinvoice.getElementsByTagName("ext:ExtensionContent").item(0);
-             ndListdoc.appendChild(_nodeAdd);
-             TransformerFactory tFactory = TransformerFactory.newInstance();
-             Transformer transformer = tFactory.newTransformer();
-             transformer.setOutputProperty(OutputKeys.INDENT, "yes");            
-             DOMSource source = new DOMSource(docinvoice);             
-             StreamResult result = new StreamResult(new StringWriter());
-             transformer.transform(source, result); 
-             ///inpustream
-             ByteArrayOutputStream _salidaxml= new ByteArrayOutputStream();
-             Result outtarge= new StreamResult(_salidaxml);
-             TransformerFactory.newInstance().newTransformer().transform(source, outtarge);
-             inputxml=new ByteArrayInputStream(_salidaxml.toByteArray());
-//             Writer output = new BufferedWriter(new FileWriter("D:\\15072016-3.xml"));
-//             String xmlOutput = result.getWriter().toString();  
-//             output.write(xmlOutput);
-//             output.close();
-//----------------VERSION ANTIGUA FUNCIONA
-//             if(fa.isFile())
-//                 fa.delete();
-//             fa.createNewFile();                         
-//             d.save(fa); 
-//----------------FIN VERSION ANTIGUA
-            GenerarFirma();
-            //---------------------------------------------GENERACION DE ARCHIVO ZIP  ----------------------------------------------------
-             fa2= new File(rutazip);//////ZIP
-             if(fa2.isFile())
-                 fa2.delete();
-             //fa.createNewFile();
-                byte[] buffer =new byte[(int)fa.length()];
-                FileOutputStream fos= new FileOutputStream(rutazip);
-                ZipOutputStream _mizip = new ZipOutputStream(fos);
-                ZipEntry ze= new ZipEntry(fa.getName());
-                _mizip.putNextEntry(ze);
-                FileInputStream in = new FileInputStream(rutaXml);
-                int _tamanio;
-                while((_tamanio=in.read(buffer))>0)
-                    _mizip.write(buffer, 0, _tamanio);                
-                _mizip.closeEntry();
-                _mizip.close();
-                fos.close();
-                _estado=true;
-            }
-            catch(Exception e)
-            {
-                _estado=false;
-                System.out.println("Error creando zip:"+e.getMessage());
-            }
-            finally{
-                System.out.println("Generaro Xml correcto...");
-            }              
-            return _estado;
-    }
+//    public boolean LlenarXMltoEntity()
+//    {
+//         try
+//            {
+//             rutaXml= Ruta.rutaFolderDocumento +_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".xml";
+//             rutazip= Ruta.rutaFolderDocumento +_eempresa.getEmp_cruc()+"-"+_efactura.getDoc_ccodigo()+"-"+_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero()+".zip";
+//             fa= new File(rutaXml);
+//             d= InvoiceDocument.Factory.newInstance();             
+//             f = d.addNewInvoice();
+//              XmlCursor _cursor=   f.newCursor();  
+//             _cursor.toNextToken();
+//             _cursor.insertNamespace(null,"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
+//             _cursor.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+//             _cursor.insertNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+//             _cursor.insertNamespace("ext","urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2");
+//             /////////////////////////////////////////////////////////TAG EXTRAS ////////////////////////////////
+//             _cursor.insertNamespace("ccts","urn:oasis:names:specification:ubl:schema:xsd:CoreComponentParameters-2");
+//             _cursor.insertNamespace("qdt","urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2");
+//             _cursor.insertNamespace("stat","urn:oasis:names:specification:ubl:schema:xsd:DocumentStatusCode-1.0");
+//             _cursor.insertNamespace("udt","urn:un:unece:uncefact:data:draft:UnqualifiedDataTypesSchemaModule:2");
+//             //////////////////////////////////////////////////////////FIN DE TAG EXTRAS///////////////////////////
+//             _cursor.insertNamespace("ds","http://www.w3.org/2000/09/xmldsig#");
+//             _cursor.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");
+//             d.documentProperties().setEncoding("ISO-8859-1");
+//             d.documentProperties().setStandalone(false);  
+////             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//             f.addNewIssueDate().setStringValue(dateFormat.format(_efactura.getFac_dfechaemision()));             
+//             UBLExtensionsType _ubltype= f.addNewUBLExtensions();
+//             ////////////////////////////////////////////////////LA SIGUIENTE LINEA SOLO SE DECLARA LA FIRMA DIGITAL/////////////////////////////
+//             _nodoFirma =_ubltype.addNewUBLExtension().addNewExtensionContent();
+//             _ubltype.addNewUBLExtension().addNewExtensionContent();
+//             ////////////////////////FIN DE LA LINEA DE FIRMA DIGITAL////////////////////////////////////////////////////////////////////////////             
+//             f.addNewUBLVersionID().setStringValue("2.0");/////////////////////////////////////////////////VERSION DEL ESQUEMA UBL -NO MODIFICAR ESTATICO
+//             f.addNewCustomizationID().setStringValue("1.0");/////////////////////////////////////////////VERSION DE LA ESTRUCTURA DEL COCUMENTO  -NO MODIFICAR ESTATICO
+//             f.addNewID().setStringValue(_efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero());/////////////////////////////////////////////////////SERIE Y NUMERO-VARIABLE
+//             InvoiceTypeCodeType _typcode= f.addNewInvoiceTypeCode();
+//            _typcode.setStringValue(_efactura.getDoc_ccodigo());//////////////////////////////////////////////////////////////
+//             DocumentCurrencyCodeType _doctype=f.addNewDocumentCurrencyCode();/////////////////////////TIPO MONEDA EN QUE SE EMITE FACTURA -VARIABLE
+//             _doctype.setStringValue(_efactura.getMon_ccodigo());
+//             //------------------------------------------------------------GUIA REMISION------------------------------------------------------
+//             DocumentReferenceType _docref=f.addNewDespatchDocumentReference();
+//             _docref.addNewID().setStringValue("F001-1");
+//             _docref.addNewDocumentTypeCode().setStringValue("09");
+//             DocumentReferenceType _docaddref =f.addNewAdditionalDocumentReference();
+//             _docaddref.addNewID().setStringValue("0000");
+//             _docaddref.addNewDocumentTypeCode().setStringValue("01");
+//             //----------------------------------------------------------EMISOR----------------------------------------------------------------
+//             SignatureType _sigtype=f.addNewSignature();
+//             _sigtype.addNewID().setStringValue("IDSignKG");
+//             PartyType _party=_sigtype.addNewSignatoryParty();
+//             _party.addNewPartyIdentification().addNewID().setStringValue(getEempresa().getEmp_cruc());
+//             _party.addNewPartyName().addNewName().setStringValue(getEempresa().getEmp_cnombre());             
+//             AttachmentType _atttype=_sigtype.addNewDigitalSignatureAttachment();
+//             _atttype.addNewExternalReference().addNewURI().setStringValue("#signatureKG");             
+//             SupplierPartyType _supptye= f.addNewAccountingSupplierParty();
+//             _supptye.addNewCustomerAssignedAccountID().setStringValue(getEempresa().getEmp_cruc());
+//             _supptye.addNewAdditionalAccountID().setStringValue(getEempresa().getDoi_ccodigo());             
+//             PartyType _aprtype=_supptye.addNewParty();
+//             _aprtype.addNewPartyName().addNewName().setStringValue(".");
+//             AddressType _addtype=_aprtype.addNewPostalAddress();
+//             _addtype.addNewID().setStringValue(getEempresa().getCodigoubigeo());//ubigeo
+//             _addtype.addNewStreetName().setStringValue(getEempresa().getDireccionsucursal());
+//             _addtype.addNewCitySubdivisionName().setStringValue(getEempresa().getDistrito());
+//             _addtype.addNewCityName().setStringValue(getEempresa().getDepartamento());
+//             _addtype.addNewCountrySubentity().setStringValue(getEempresa().getProvincia());
+//             _addtype.addNewDistrict().setStringValue(getEempresa().getDistrito());
+//             _addtype.addNewCountry().addNewIdentificationCode().setStringValue("PE");
+//             PartyLegalEntityType _legaenty=_aprtype.addNewPartyLegalEntity();
+//             _legaenty.addNewRegistrationName().setStringValue(getEempresa().getEmp_cnombre());
+//              //--------------------------------------------------------------------------------ADQUIRIENTE---------------------------------------------                                              
+//             CustomerPartyType _custype= f.addNewAccountingCustomerParty();
+//             _custype.addNewCustomerAssignedAccountID().setStringValue(getEcliente().getCli_cnumerodoc());
+//             _custype.addNewAdditionalAccountID().setStringValue(getEcliente().getCoi_ccodigo());
+//             PartyType _adquiriente=_custype.addNewParty();
+//             _adquiriente.addNewPartyLegalEntity().addNewRegistrationName().setStringValue(getEcliente().getCli_crazon());
+//             //------------------------------------------------------IMPUESTOS GLOBALES-------------------------------------------------------
+//             TaxTotalType _taxto =f.addNewTaxTotal();
+//             TaxAmountType _taxamounttypecliente=_taxto.addNewTaxAmount();
+//             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypecliente.setStringValue(String.valueOf(_efactura.getFac_igv()));
+//             TaxSubtotalType _taxsubtype= _taxto.addNewTaxSubtotal();
+//             _taxamounttypecliente=_taxsubtype.addNewTaxAmount();
+//             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypecliente.setStringValue(String.valueOf(_efactura.getFac_igv()));
+//             TaxSchemeType _schematype=_taxsubtype.addNewTaxCategory().addNewTaxScheme();
+//             _schematype.addNewID().setStringValue("1000");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
+//             _schematype.addNewName().setStringValue("IGV");
+//             _schematype.addNewTaxTypeCode().setStringValue("VAT");////////////////////////////////////FIN CATALOGO 05
+//             
+//             //------------------------------------------------------------------------------------ISC
+//             TaxTotalType _taxtoISC =f.addNewTaxTotal();
+//             TaxAmountType _taxamounttypeclienteISC=_taxtoISC.addNewTaxAmount();
+//             _taxamounttypeclienteISC.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypeclienteISC.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalisc())));
+//             TaxSubtotalType _taxsubtypeISC= _taxtoISC.addNewTaxSubtotal();
+//             _taxamounttypeclienteISC=_taxsubtypeISC.addNewTaxAmount();
+//             _taxamounttypeclienteISC.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypeclienteISC.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalisc())));
+//             _schematype=_taxsubtypeISC.addNewTaxCategory().addNewTaxScheme();
+//             _schematype.addNewID().setStringValue("2000");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
+//             _schematype.addNewName().setStringValue("ISC");
+//             _schematype.addNewTaxTypeCode().setStringValue("EXC");////////////////////////////////////FIN CATALOGO 05
+//             //------------------------------------------------------------------------------------OTROS
+//             TaxTotalType _taxtootrsotri =f.addNewTaxTotal();
+//             TaxAmountType _taxamounttypeclienteotrotri=_taxtootrsotri.addNewTaxAmount();
+//             _taxamounttypeclienteotrotri.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypeclienteotrotri.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalotrostributos())));
+//             TaxSubtotalType _taxsubtypeotrotri= _taxtootrsotri.addNewTaxSubtotal();
+//             _taxamounttypeclienteotrotri=_taxsubtypeotrotri.addNewTaxAmount();
+//             _taxamounttypeclienteotrotri.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypeclienteotrotri.setStringValue(String.valueOf(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotalotrostributos())));
+//             _schematype=_taxsubtypeotrotri.addNewTaxCategory().addNewTaxScheme();
+//             _schematype.addNewID().setStringValue("9999");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
+//             _schematype.addNewName().setStringValue("OTROS TRIBUTOS");
+//             _schematype.addNewTaxTypeCode().setStringValue("OTH");////////////////////////////////////FIN CATALOGO 05
+//             //------------------------------------------------------------------------------------------------------------------
+//             MonetaryTotalType _legalmonetarytotal= f.addNewLegalMonetaryTotal();            
+//             PayableAmountType _payableamount=_legalmonetarytotal.addNewPayableAmount();
+//             _payableamount.setCurrencyID(CurrencyCodeContentType.PEN);//-------------------------------------------------Moneda total a pagar
+//             _payableamount.setStringValue(""+(_fmd.Farmat2DosDecimales(_efactura.getFac_ftotal())));
+//             //-----------------------------------------------------------ITEM FACTURA----------------------------------------------------
+//             //------------------------------------------------------------DETALLE--------------------------------------------
+//             for (int i=0;i<=_lsdetfactura.size()-1;i++)
+//             {
+//                     InvoiceLineType _invoiceline=f.addNewInvoiceLine();
+//                     _invoiceline.addNewID().setStringValue(""+(i+1));/////////////////////////////////////NUMERO ORDE DEL ITEM
+//                     InvoicedQuantityType _quantitytype =_invoiceline.addNewInvoicedQuantity();
+//                     _quantitytype.setUnitCode(UnitCodeContentType.CS);//////////////////////////////UNIDAD MEDIDA
+//                     _quantitytype.setStringValue(""+_lsdetfactura.get(i).getDfa_ccantidad());
+//                     LineExtensionAmountType _extamounttype=  _invoiceline.addNewLineExtensionAmount();
+//                     _extamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//                     _extamounttype.setStringValue(""+_fmd.Farmat2DosDecimales(_lsdetfactura.get(i).getDfa_fvalorsubtotal()));//----------------------------------CANTIDAD UNIDAD X ITEM
+//                     ////////////////////////////VALORES UNITARIOS////////////////
+//                     PricingReferenceType _preref =_invoiceline.addNewPricingReference();
+//                     PriceType _conditionaltype=_preref.addNewAlternativeConditionPrice();
+//                     PriceAmountType _priceamounttype=_conditionaltype.addNewPriceAmount();
+//                     _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//                     _priceamounttype.setStringValue(""+ _fmd.Farmat2DosDecimales(_lsdetfactura.get(i).getDfa_fvalorventa()));//(_lsdetfactura.get(i).getDfa_fvalorunitario()+_lsdetfactura.get(i).getDfa_fvaloritemigv()));///////////////////////////////////////MONTO DEL VALOR UNITARIO
+//                     _conditionaltype.addNewPriceTypeCode().setStringValue("01");////////////////////CODIGO VALOR UNITARIO : CATALOGO 16
+//                     ////////////IMPORTE TOTAL DE UN TIPO PARTICULAR DE IMPUESTO//////////////////////////////////////////////
+//                     TaxTotalType _taxtotalfinal= _invoiceline.addNewTaxTotal();
+//                     TaxAmountType _taxamounttype=_taxtotalfinal.addNewTaxAmount();
+//                     _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//                     _taxamounttype.setStringValue(""+_fmd.Farmat2DosDecimales((_lsdetfactura.get(i).getDfa_fvaloritemigv())));////////////////////////////////////////TOTAL IMPORTE         
+//                     TaxSubtotalType _subtotalfinal=_taxtotalfinal.addNewTaxSubtotal();
+//                     _taxamounttype=_subtotalfinal.addNewTaxAmount();
+//                     _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//                     _taxamounttype.setStringValue(""+_fmd.Farmat2DosDecimales((_lsdetfactura.get(i).getDfa_fvaloritemigv())));
+//                     TaxCategoryType _taxcategoriatype=_subtotalfinal.addNewTaxCategory();
+//                     _taxcategoriatype.addNewTaxExemptionReasonCode().setStringValue(""+_lsdetfactura.get(i).getPve_ctipoafectacion());///////////10 CATALOGO 07 CODIGO DE TIPO DE AFECTACIO DEL IGV
+////                     _taxcategoriatype.addNewTierRange().setStringValue("02");//-----------------------Opcional
+//                     TaxSchemeType _taxchemetype=_taxcategoriatype.addNewTaxScheme();
+//                     _taxchemetype.addNewID().setStringValue("1000");///////////////////////////////////ID
+//                     _taxchemetype.addNewName().setStringValue("IGV");
+//                     _taxchemetype.addNewTaxTypeCode().setStringValue("VAT");
+//                     ///////////////////ITEM//////////////////////////////////////////
+//                     ItemType _itemtype=_invoiceline.addNewItem();
+//                     _itemtype.addNewDescription().setStringValue(""+_lsdetfactura.get(i).getArt_cdescripcion());
+//                     _itemtype.addNewSellersItemIdentification().addNewID().setStringValue(""+_lsdetfactura.get(i).getArt_ncodarticulo());
+//                     PriceType _typepreci=_invoiceline.addNewPrice();
+//                     _priceamounttype=_typepreci.addNewPriceAmount();
+//                     _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//                     _priceamounttype.setStringValue(""+_fmd.Farmat2DosDecimales(_lsdetfactura.get(i).getDfa_fvalorunitario()));
+//             }
+//             //------------------------------------------------------------FIN DETALLE-----------------------------------------
+//             
+//             
+//             //-------------------------------------------------------Informacion Adicional--------------------------------------
+//             AdditionalInformationDocument _infodoc=AdditionalInformationDocument.Factory.newInstance();
+//             XmlCursor _cursor2= _infodoc.newCursor();
+//             _cursor2.toNextToken();
+//             _cursor2.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+//             _cursor2.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");             
+//             _addtypeinfo=_infodoc.addNewAdditionalInformation();
+//             AdditionalMonetaryTotalType   _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//             _typemonetaryaddinfo.addNewID().setStringValue("1001");///////////////////////////////CASO 1001
+//             PayableAmountType _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//             _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue(""+_efactura.getFac_fimportesubtotal());
+//            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//            _typemonetaryaddinfo.addNewID().setStringValue("1002");//////////////////////////////////CASO 1002
+//            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue(""+_efactura.getFac_ftotalinafecto());
+//            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//            _typemonetaryaddinfo.addNewID().setStringValue("1003");//////////////////////////////////CASO 1003
+//            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue(""+_efactura.getFac_ftotalexonerado());
+//            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//            _typemonetaryaddinfo.addNewID().setStringValue("1004");//////////////////////////////////CASO 1004
+//            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue("0.0");
+//             //-------------------------------------------------------------------XML----------------------------------------
+//             DocumentBuilderFactory dbf= DocumentBuilderFactory.newInstance();
+//             DocumentBuilder db=null;
+//             Document docinvoice=null;
+//             Document docinfoadd=null;
+//             db= dbf.newDocumentBuilder();
+//             docinvoice =db.parse(d.newInputStream());
+//             docinfoadd=db.parse(_infodoc.newInputStream());
+//             Node _nodeAdd = docinvoice.importNode(docinfoadd.getElementsByTagName("sac:AdditionalInformation").item(0), true);
+//             Node ndListdoc =docinvoice.getElementsByTagName("ext:ExtensionContent").item(0);
+//             ndListdoc.appendChild(_nodeAdd);
+//             TransformerFactory tFactory = TransformerFactory.newInstance();
+//             Transformer transformer = tFactory.newTransformer();
+//             transformer.setOutputProperty(OutputKeys.INDENT, "yes");            
+//             DOMSource source = new DOMSource(docinvoice);             
+//             StreamResult result = new StreamResult(new StringWriter());
+//             transformer.transform(source, result); 
+//             ///inpustream
+//             ByteArrayOutputStream _salidaxml= new ByteArrayOutputStream();
+//             Result outtarge= new StreamResult(_salidaxml);
+//             TransformerFactory.newInstance().newTransformer().transform(source, outtarge);
+//             inputxml=new ByteArrayInputStream(_salidaxml.toByteArray());
+////             Writer output = new BufferedWriter(new FileWriter("D:\\15072016-3.xml"));
+////             String xmlOutput = result.getWriter().toString();  
+////             output.write(xmlOutput);
+////             output.close();
+////----------------VERSION ANTIGUA FUNCIONA
+////             if(fa.isFile())
+////                 fa.delete();
+////             fa.createNewFile();                         
+////             d.save(fa); 
+////----------------FIN VERSION ANTIGUA
+//            GenerarFirma();
+//            //---------------------------------------------GENERACION DE ARCHIVO ZIP  ----------------------------------------------------
+//             fa2= new File(rutazip);//////ZIP
+//             if(fa2.isFile())
+//                 fa2.delete();
+//             //fa.createNewFile();
+//                byte[] buffer =new byte[(int)fa.length()];
+//                FileOutputStream fos= new FileOutputStream(rutazip);
+//                ZipOutputStream _mizip = new ZipOutputStream(fos);
+//                ZipEntry ze= new ZipEntry(fa.getName());
+//                _mizip.putNextEntry(ze);
+//                FileInputStream in = new FileInputStream(rutaXml);
+//                int _tamanio;
+//                while((_tamanio=in.read(buffer))>0)
+//                    _mizip.write(buffer, 0, _tamanio);                
+//                _mizip.closeEntry();
+//                _mizip.close();
+//                fos.close();
+//                _estado=true;
+//            }
+//            catch(Exception e)
+//            {
+//                _estado=false;
+//                System.out.println("Error creando zip:"+e.getMessage());
+//            }
+//            finally{
+//                System.out.println("Generaro Xml correcto...");
+//            }              
+//            return _estado;
+//    }
+//    public boolean LlenarXMl()//ejeplo de carga xml estatico
+//    {
+//        
+//         try
+//            {
+//             d= InvoiceDocument.Factory.newInstance();             
+//             f = d.addNewInvoice();
+//              XmlCursor _cursor=   f.newCursor();  
+//             _cursor.toNextToken();
+//             _cursor.insertNamespace(null,"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
+//             _cursor.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+//             _cursor.insertNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+//             _cursor.insertNamespace("ext","urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2");
+//             /////////////////////////////////////////////////////////TAG EXTRAS ////////////////////////////////
+//             _cursor.insertNamespace("ccts","urn:oasis:names:specification:ubl:schema:xsd:CoreComponentParameters-2");
+//             _cursor.insertNamespace("qdt","urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2");
+//             _cursor.insertNamespace("stat","urn:oasis:names:specification:ubl:schema:xsd:DocumentStatusCode-1.0");
+//             _cursor.insertNamespace("udt","urn:un:unece:uncefact:data:draft:UnqualifiedDataTypesSchemaModule:2");
+//             //////////////////////////////////////////////////////////FIN DE TAG EXTRAS///////////////////////////
+//             _cursor.insertNamespace("ds","http://www.w3.org/2000/09/xmldsig#");
+//             _cursor.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");
+//             d.documentProperties().setEncoding("ISO-8859-1");
+//             d.documentProperties().setStandalone(false);            
+//             f.addNewIssueDate().setStringValue("2016-07-15");             
+//             UBLExtensionsType _ubltype= f.addNewUBLExtensions();
+//             ////////////////////////////////////////////////////LA SIGUIENTE LINEA SOLO SE DECLARA LA FIRMA DIGITAL/////////////////////////////
+//             _nodoFirma =_ubltype.addNewUBLExtension().addNewExtensionContent();
+//             _ubltype.addNewUBLExtension().addNewExtensionContent();
+//             ////////////////////////FIN DE LA LINEA DE FIRMA DIGITAL////////////////////////////////////////////////////////////////////////////             
+//             f.addNewUBLVersionID().setStringValue("2.0");/////////////////////////////////////////////////VERSION DEL ESQUEMA UBL -NO MODIFICAR ESTATICO
+//             f.addNewCustomizationID().setStringValue("1.0");/////////////////////////////////////////////VERSION DE LA ESTRUCTURA DEL COCUMENTO  -NO MODIFICAR ESTATICO
+//             f.addNewID().setStringValue("F001-01");/////////////////////////////////////////////////////SERIE Y NUMERO-VARIABLE
+//             InvoiceTypeCodeType _typcode= f.addNewInvoiceTypeCode();
+//            _typcode.setStringValue("01");//////////////////////////////////////////////////////////////
+//             DocumentCurrencyCodeType _doctype=f.addNewDocumentCurrencyCode();/////////////////////////TIPO MONEDA EN QUE SE EMITE FACTURA -VARIABLE
+//             _doctype.setStringValue("PEN");
+//             //------------------------------------------------------------GUIA REMISION------------------------------------------------------
+//             DocumentReferenceType _docref=f.addNewDespatchDocumentReference();
+//             _docref.addNewID().setStringValue("010101");
+//             _docref.addNewDocumentTypeCode().setStringValue("01");
+//             DocumentReferenceType _docaddref =f.addNewAdditionalDocumentReference();
+//             _docaddref.addNewID().setStringValue("0000");
+//             _docaddref.addNewDocumentTypeCode().setStringValue("01");
+//             //----------------------------------------------------------EMISOR----------------------------------------------------------------
+//             SignatureType _sigtype=f.addNewSignature();
+//             _sigtype.addNewID().setStringValue("IDSignKG");
+//             PartyType _party=_sigtype.addNewSignatoryParty();
+//             _party.addNewPartyIdentification().addNewID().setStringValue("20456047212");
+//             _party.addNewPartyName().addNewName().setStringValue("DigitalBox");             
+//             AttachmentType _atttype=_sigtype.addNewDigitalSignatureAttachment();
+//             _atttype.addNewExternalReference().addNewURI().setStringValue("#signatureKG");             
+//             SupplierPartyType _supptye= f.addNewAccountingSupplierParty();
+//             _supptye.addNewCustomerAssignedAccountID().setStringValue("20456047212");
+//             _supptye.addNewAdditionalAccountID().setStringValue("6");             
+//             PartyType _aprtype=_supptye.addNewParty();
+//             _aprtype.addNewPartyName().addNewName().setStringValue("...");
+//             AddressType _addtype=_aprtype.addNewPostalAddress();
+//             _addtype.addNewID().setStringValue("040104");//ubigeo
+//             _addtype.addNewStreetName().setStringValue("AV. ALFONSO UGARTE 913 E' 19 URB. LA LIBERTAD 4 CDRAS ARRIBA DE PLAZA LAS AMERICAS");
+//             _addtype.addNewCitySubdivisionName().setStringValue("Cerro colorado");
+//             _addtype.addNewCityName().setStringValue("AREQUIPA");
+//             _addtype.addNewCountrySubentity().setStringValue("AREQUIPA");
+//             _addtype.addNewDistrict().setStringValue("CERRO COLORADO");
+//             _addtype.addNewCountry().addNewIdentificationCode().setStringValue("PE");
+//             PartyLegalEntityType _legaenty=_aprtype.addNewPartyLegalEntity();
+//             _legaenty.addNewRegistrationName().setStringValue("DIGITAL BOX PERU SAC.");
+//              //--------------------------------------------------------------------------------ADQUIRIENTE---------------------------------------------                                              
+//             CustomerPartyType _custype= f.addNewAccountingCustomerParty();
+//             _custype.addNewCustomerAssignedAccountID().setStringValue("20228985237");
+//             _custype.addNewAdditionalAccountID().setStringValue("6");
+//             PartyType _adquiriente=_custype.addNewParty();
+//             _adquiriente.addNewPartyLegalEntity().addNewRegistrationName().setStringValue("DANIEL TRAVIEZO");
+//             //------------------------------------------------------IMPUESTOS GLOBALES-------------------------------------------------------
+//             TaxTotalType _taxto =f.addNewTaxTotal();
+//             TaxAmountType _taxamounttypecliente=_taxto.addNewTaxAmount();
+//             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypecliente.setStringValue("26361.55");
+//             TaxSubtotalType _taxsubtype= _taxto.addNewTaxSubtotal();
+//             _taxamounttypecliente=_taxsubtype.addNewTaxAmount();
+//             _taxamounttypecliente.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttypecliente.setStringValue("26361.55");
+//             TaxSchemeType _schematype=_taxsubtype.addNewTaxCategory().addNewTaxScheme();
+//             _schematype.addNewID().setStringValue("1000");////////////////////////////////////////////CATALOGO 05-TIPO DE TRIBUTO
+//             _schematype.addNewName().setStringValue("IGV");
+//             _schematype.addNewTaxTypeCode().setStringValue("VAT");////////////////////////////////////FIN CATALOGO 05
+//             MonetaryTotalType _montotal= f.addNewLegalMonetaryTotal();
+//             //------------------------------------------------TOTAL  A PAGAR DE LA FACTURA Y CARGOS-------------------------------
+//             ChargeTotalAmountType _charguetotalamount =_montotal.addNewChargeTotalAmount();
+//             _charguetotalamount.setCurrencyID(CurrencyCodeContentType.PEN);////IMPORTE TOTAL DE LOS CARGOS APLICADOS AL TOTAL  DE LA FACTURA
+//             _charguetotalamount.setStringValue("30.50");             
+//             PayableAmountType _amounttype=_montotal.addNewPayableAmount();
+//             _amounttype.setCurrencyID(CurrencyCodeContentType.PEN);////////////MONEDA E IMPORTE TOTAL A PAGAR
+//             _amounttype.setStringValue("30.50");
+//             //-----------------------------------------------------------ITEM FACTURA----------------------------------------------------
+//             InvoiceLineType _invoiceline=f.addNewInvoiceLine();
+//             _invoiceline.addNewID().setStringValue("1");/////////////////////////////////////NUMERO ORDE DEL ITEM
+//             InvoicedQuantityType _quantitytype =_invoiceline.addNewInvoicedQuantity();
+//             _quantitytype.setUnitCode(UnitCodeContentType.CS);//////////////////////////////UNIDAD MEDIDA
+//             _quantitytype.setStringValue("300.0");
+//             LineExtensionAmountType _extamounttype=  _invoiceline.addNewLineExtensionAmount();
+//             _extamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _extamounttype.setStringValue("172890.0");////////////////////////////////////////////CANTIDAD UNIDAD X ITEM
+//             ////////////////////////////VALORES UNITARIOS////////////////
+//             PricingReferenceType _preref =_invoiceline.addNewPricingReference();
+//             PriceType _conditionaltype=_preref.addNewAlternativeConditionPrice();
+//             PriceAmountType _priceamounttype=_conditionaltype.addNewPriceAmount();
+//             _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _priceamounttype.setStringValue("18.75");///////////////////////////////////////MONTO DEL VALOR UNITARIO
+//             _conditionaltype.addNewPriceTypeCode().setStringValue("01");////////////////////CODIGO VALOR UNITARIO
+//             ////////////IMPORTE TOTAL DE UN TIPO PARTICULAR DE IMPUESTO//////////////////////////////////////////////
+//             TaxTotalType _taxtotalfinal= _invoiceline.addNewTaxTotal();
+//             TaxAmountType _taxamounttype=_taxtotalfinal.addNewTaxAmount();
+//             _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttype.setStringValue("8745.0");////////////////////////////////////////TOTAL IMPORTE         
+//             TaxSubtotalType _subtotalfinal=_taxtotalfinal.addNewTaxSubtotal();
+//             _taxamounttype=_subtotalfinal.addNewTaxAmount();
+//             _taxamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _taxamounttype.setStringValue("8745.0");
+//             TaxCategoryType _taxcategoriatype=_subtotalfinal.addNewTaxCategory();
+//             _taxcategoriatype.addNewTaxExemptionReasonCode().setStringValue("10");
+//             _taxcategoriatype.addNewTierRange().setStringValue("02");
+//             TaxSchemeType _taxchemetype=_taxcategoriatype.addNewTaxScheme();
+//             _taxchemetype.addNewID().setStringValue("1000");///////////////////////////////////ID
+//             _taxchemetype.addNewName().setStringValue("IGV");
+//             _taxchemetype.addNewTaxTypeCode().setStringValue("VAT");
+//             ///////////////////ITEM//////////////////////////////////////////
+//             ItemType _itemtype=_invoiceline.addNewItem();
+//             _itemtype.addNewDescription().setStringValue("Arros");
+//             _itemtype.addNewSellersItemIdentification().addNewID().setStringValue("01");
+//             PriceType _typepreci=_invoiceline.addNewPrice();
+//             _priceamounttype=_typepreci.addNewPriceAmount();
+//             _priceamounttype.setCurrencyID(CurrencyCodeContentType.PEN);
+//             _priceamounttype.setStringValue("678.0");
+//             //-------------------------------------------------------Informacion Adicional--------------------------------------
+//             AdditionalInformationDocument _infodoc=AdditionalInformationDocument.Factory.newInstance();
+//             XmlCursor _cursor2= _infodoc.newCursor();
+//             _cursor2.toNextToken();
+//             _cursor2.insertNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+//             _cursor2.insertNamespace("sac", "urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1");             
+//             _addtypeinfo=_infodoc.addNewAdditionalInformation();
+//             AdditionalMonetaryTotalType   _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//             _typemonetaryaddinfo.addNewID().setStringValue("1001");///////////////////////////////CASO 1001
+//             PayableAmountType _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//             _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue("3456.58");
+//            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//            _typemonetaryaddinfo.addNewID().setStringValue("1002");//////////////////////////////////CASO 1002
+//            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue("0.0");
+//            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//            _typemonetaryaddinfo.addNewID().setStringValue("1003");//////////////////////////////////CASO 1003
+//            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue("0.0");
+//            _typemonetaryaddinfo=_addtypeinfo.addNewAdditionalMonetaryTotal();
+//            _typemonetaryaddinfo.addNewID().setStringValue("1004");//////////////////////////////////CASO 1004
+//            _addpayamounttypeinfo=_typemonetaryaddinfo.addNewPayableAmount();
+//            _addpayamounttypeinfo.setCurrencyID(CurrencyCodeContentType.PEN);
+//            _addpayamounttypeinfo.setStringValue("0.0");
+//             //-------------------------------------------------------------------XML----------------------------------------
+//             DocumentBuilderFactory dbf= DocumentBuilderFactory.newInstance();
+//             DocumentBuilder db=null;
+//             Document docinvoice=null;
+//             Document docinfoadd=null;
+//             db= dbf.newDocumentBuilder();
+//             docinvoice =db.parse(d.newInputStream());
+//             docinfoadd=db.parse(_infodoc.newInputStream());
+//             Node _nodeAdd = docinvoice.importNode(docinfoadd.getElementsByTagName("sac:AdditionalInformation").item(0), true);
+//             Node ndListdoc =docinvoice.getElementsByTagName("ext:ExtensionContent").item(0);
+//             ndListdoc.appendChild(_nodeAdd);
+//             TransformerFactory tFactory = TransformerFactory.newInstance();
+//             Transformer transformer = tFactory.newTransformer();
+//             transformer.setOutputProperty(OutputKeys.INDENT, "yes");            
+//             DOMSource source = new DOMSource(docinvoice);             
+//             StreamResult result = new StreamResult(new StringWriter());
+//             transformer.transform(source, result); 
+//             ///inpustream
+//             ByteArrayOutputStream _salidaxml= new ByteArrayOutputStream();
+//             Result outtarge= new StreamResult(_salidaxml);
+//             TransformerFactory.newInstance().newTransformer().transform(source, outtarge);
+//             inputxml=new ByteArrayInputStream(_salidaxml.toByteArray());
+////             Writer output = new BufferedWriter(new FileWriter("D:\\15072016-3.xml"));
+////             String xmlOutput = result.getWriter().toString();  
+////             output.write(xmlOutput);
+////             output.close();
+////----------------VERSION ANTIGUA FUNCIONA
+////             if(fa.isFile())
+////                 fa.delete();
+////             fa.createNewFile();                         
+////             d.save(fa); 
+////----------------FIN VERSION ANTIGUA
+//            GenerarFirma();
+//            //---------------------------------------------GENERACION DE ARCHIVO ZIP  ----------------------------------------------------
+//             fa2= new File(rutazip);//////ZIP
+//             if(fa2.isFile())
+//                 fa2.delete();
+//             //fa.createNewFile();
+//                byte[] buffer =new byte[(int)fa.length()];
+//                FileOutputStream fos= new FileOutputStream(rutazip);
+//                ZipOutputStream _mizip = new ZipOutputStream(fos);
+//                ZipEntry ze= new ZipEntry(fa.getName());
+//                _mizip.putNextEntry(ze);
+//                FileInputStream in = new FileInputStream(rutaXml);
+//                int _tamanio;
+//                while((_tamanio=in.read(buffer))>0)
+//                    _mizip.write(buffer, 0, _tamanio);                
+//                _mizip.closeEntry();
+//                _mizip.close();
+//                fos.close();
+//                _estado=true;
+//            }
+//            catch(Exception e)
+//            {
+//                _estado=false;
+//                System.out.println("Error creando zip:"+e.getMessage());
+//            }
+//            finally{
+//                System.out.println("Generaro Xml correcto...");
+//            }              
+//            return _estado;
+//    }
 
     public void GenerarFirma()
     {
@@ -950,9 +951,9 @@ public class GenerarXmml {
                 Reference ref = fac.newReference("", fac.newDigestMethod(DigestMethod.SHA1, null),Collections.singletonList(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null)),null,null);
                 SignedInfo _si =fac.newSignedInfo(fac.newCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE, (C14NMethodParameterSpec)null),fac.newSignatureMethod(SignatureMethod.RSA_SHA1, null), Collections.singletonList(ref));
                 KeyStore ks =KeyStore.getInstance("JKS");
-                File fff = new File("D:\\CertificadoOriginal\\sanjosealias");//("d:\\sanjo.jks");
-                fff.isFile();
-                ks.load(new FileInputStream("D:\\CertificadoOriginal\\sanjosealias"),"estacionsanjose16".toCharArray());
+                //File fff = new File();//"D:\\CertificadoOriginal\\sanjosealias");//("d:\\sanjo.jks");
+                //fff.isFile();
+                ks.load(new FileInputStream(Ruta.rutaCertificado),"estacionsanjose16".toCharArray());
                 KeyStore.PrivateKeyEntry keyentry= (KeyStore.PrivateKeyEntry) ks.getEntry("sanjose16", new KeyStore.PasswordProtection("estacionsanjose16".toCharArray()));
                 X509Certificate cert =(X509Certificate) keyentry.getCertificate();
                 //--------------------------------------------------------------------------probando cambios---------------------
@@ -1003,7 +1004,7 @@ public class GenerarXmml {
         boolean _rpta=true;
         try
         {
-              String Directorio=x_ruta.substring(0, x_ruta.length()-3);
+              String Directorio=x_ruta.substring(0, x_ruta.length()-4);
               String _rutaArchivoDescomprimido="";
               byte[] buffer = new byte[1024];
               File folder = new File(Directorio);
@@ -1041,9 +1042,12 @@ public class GenerarXmml {
                   doc.getDocumentElement().normalize();
                   System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
                   NodeList nlist = doc.getElementsByTagName("cac:DocumentResponse");
-                  errReferenceID=  nlist.item(0).getChildNodes().item(1).getChildNodes().item(1).getTextContent();
-                  errResponseCode= nlist.item(0).getChildNodes().item(1).getChildNodes().item(3).getTextContent();
-                  errDescription= nlist.item(0).getChildNodes().item(1).getChildNodes().item(5).getTextContent();
+                  errReferenceID=nlist.item(0).getChildNodes().item(0).getChildNodes().item(0).getTextContent();  //nlist.item(0).getChildNodes().item(1).getChildNodes().item(1).getTextContent(); 
+                                   //numero-serie factura
+                  errResponseCode=nlist.item(0).getChildNodes().item(0).getChildNodes().item(1).getTextContent(); //nlist.item(0).getChildNodes().item(1).getChildNodes().item(3).getTextContent(); 
+                                   //codigo error :0=ok
+                  errDescription= nlist.item(0).getChildNodes().item(0).getChildNodes().item(2).getTextContent();//nlist.item(0).getChildNodes().item(1).getChildNodes().item(5).getTextContent();   
+                                   //descriocion respuesta
                   if(Integer.parseInt(errResponseCode)>0)
                   {
                       System.out.println("ResponseCode  :" + errReferenceID);
@@ -1097,28 +1101,6 @@ public class GenerarXmml {
         this._ecliente = _ecliente;
     }
     
-//    private  X509Certificate  CargarCertificadoPfx()
-//    {
-//        X509Certificate cert=null;
-//        try {
-//            FileInputStream stream = new FileInputStream("D:\\CertificadoOriginal\\MPS20160823349277.pfx");
-//            KeyStore store =KeyStore.getInstance("PKCS12","SUN");
-//            store.load(stream,"estacionsanjose16".toCharArray());
-//            Enumeration<String> aliases=store.aliases();
-//            while(aliases.hasMoreElements())
-//                System.out.println("valor :"+aliases.nextElement());
-//             cert =(X509Certificate)store.getCertificate("alias");
-//        } catch (Exception e) {System.out.println("Error Leyendo : " + e.getMessage());
-//        }
-//        
-//        return cert;
-//    }
-    
-
-    
-    
-    
-    
-    
+  
     
 }

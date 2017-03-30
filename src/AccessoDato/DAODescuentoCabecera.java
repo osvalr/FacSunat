@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class DAODescuentoCabecera implements IOperacion{
             pst.setInt(1, o);
             ResultSet _rs = pst.executeQuery();
             if(_rs.next())
-                _escuento=(new EDescuentoCabecera(_rs.getInt("cds_ncodigo"),_rs.getString("cds_cnombre"),_rs.getInt("suc_ncodigo"),_rs.getString("suc_calias"),_rs.getString("suc_cdireccion"),InstancaEntidad.UNCHANGUE));
+                _escuento=(new EDescuentoCabecera(_rs.getInt("cds_ncodigo"),_rs.getString("cds_cnombre"),_rs.getInt("suc_ncodigo"),_rs.getString("suc_calias"),_rs.getString("suc_cdireccion"),InstanciaEntidad.UNCHANGUE));
         }catch(Exception e)
         {_con.Cerrar();}
         finally{_con.Cerrar();}
@@ -93,7 +93,7 @@ public class DAODescuentoCabecera implements IOperacion{
             pst=_con.RecibirQuer(_selectAll);
             ResultSet _rs = pst.executeQuery();
             while(_rs.next())
-                _lsdescuento.add(new EDescuentoCabecera(_rs.getInt("cds_ncodigo"),_rs.getString("cds_cnombre"),_rs.getInt("suc_ncodigo"),_rs.getString("suc_calias"),_rs.getString("suc_cdireccion"),InstancaEntidad.UNCHANGUE));
+                _lsdescuento.add(new EDescuentoCabecera(_rs.getInt("cds_ncodigo"),_rs.getString("cds_cnombre"),_rs.getInt("suc_ncodigo"),_rs.getString("suc_calias"),_rs.getString("suc_cdireccion"),InstanciaEntidad.UNCHANGUE));
 
         }catch(Exception e)
         {_con.Cerrar();}

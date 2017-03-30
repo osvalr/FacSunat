@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
     }
     
     String driver ="org.postgresql.Driver";
-    String connectStirng ="jdbc:postgresql://localhost:5432/Factuta_DB_02_06_2016";
+    String connectStirng ="jdbc:postgresql://localhost:5432/DBFactura";
     String user="postgres";
     String pwd="postgres";
     public Connection con=null;

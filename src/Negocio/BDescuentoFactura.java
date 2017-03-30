@@ -4,7 +4,7 @@ package Negocio;
 import AccessoDato.DAODescuentoFactura;
 import AccessoDato.EDescuentoFactura;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +27,11 @@ public class BDescuentoFactura {
             for (int i=0;i<=_lsdescuento.size()-1;i++)
             {
                 EDescuentoFactura _edescuento=_lsdescuento.get(i);
-                if(_edescuento.getM_instancia()==InstancaEntidad.NEW)
+                if(_edescuento.getM_instancia()==InstanciaEntidad.NEW)
                 {
                     _rpta=_daodescuentofactura.Guardar(_edescuento);
                 }
-                if(_edescuento.getM_instancia()==InstancaEntidad.MODIFY)
+                if(_edescuento.getM_instancia()==InstanciaEntidad.MODIFY)
                 {
                      _rpta=_daodescuentofactura.Modificar(_edescuento);
                 }

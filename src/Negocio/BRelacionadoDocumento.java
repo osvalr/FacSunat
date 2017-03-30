@@ -7,7 +7,7 @@ import AccessoDato.DAORelacionadoDocumentoDetalle;
 import AccessoDato.ERelacionadoDocumentoDetalle;
 import AccessoDato.ERelacionadoDocumento;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.util.List;
 
 public class BRelacionadoDocumento {
@@ -27,7 +27,7 @@ public class BRelacionadoDocumento {
             _con.con.setAutoCommit(false);
             _con.Abrir();
             _daorelaciondoc.setCon(_con);
-            if(x_relacion.getM_instancia()==InstancaEntidad.NEW)
+            if(x_relacion.getM_instancia()==InstanciaEntidad.NEW)
             {
                 if(_daorelaciondoc.Guardar(x_relacion))
                 {
@@ -38,11 +38,11 @@ public class BRelacionadoDocumento {
                     {
                         _detalle=x_detalledocumento.get(i);
                         _detalle.setRel_ncodigo(x_relacion.getRel_ncodigo());
-                        if(_detalle.getM_instancia()==InstancaEntidad.NEW)
+                        if(_detalle.getM_instancia()==InstanciaEntidad.NEW)
                         {
                             r=_daodetalle.Guardar(_detalle);
                         }
-                        if(_detalle.getM_instancia()==InstancaEntidad.MODIFY)
+                        if(_detalle.getM_instancia()==InstanciaEntidad.MODIFY)
                         {
                             r=_daodetalle.Modificar(_detalle);
                         }
@@ -61,7 +61,7 @@ public class BRelacionadoDocumento {
                 else
                     _con.con.rollback();
             }
-            else if(x_relacion.getM_instancia()==InstancaEntidad.MODIFY)
+            else if(x_relacion.getM_instancia()==InstanciaEntidad.MODIFY)
             {
                 if(_daorelaciondoc.Modificar(x_relacion))
                 {

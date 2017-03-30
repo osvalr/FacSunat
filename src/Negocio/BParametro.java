@@ -6,7 +6,7 @@ import AccessoDato.DAOParametro;
 import AccessoDato.ENumero;
 import AccessoDato.EParametro;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class BParametro {
             _con= new Conector(true);  
             _con.con.setAutoCommit(false);  
             _daoparametro.setCon(_con);
-            if(x_parametro.getM_instancia()==InstancaEntidad.NEW)
+            if(x_parametro.getM_instancia()==InstanciaEntidad.NEW)
             {
                 if(_daoparametro.Guardar(x_parametro))
                 {
@@ -51,16 +51,16 @@ public class BParametro {
                         _enumero=x_lsnumero.get(i);
                         _enumero.setPar_ncodigo(x_parametro.getPar_ncodigo());
                         _enumero.setSuc_ncodigo(x_parametro.getPar_nsucursal());
-                        if(_enumero.getM_instancia()==InstancaEntidad.NEW)
+                        if(_enumero.getM_instancia()==InstanciaEntidad.NEW)
                             _rpta=_daonumero.Guardar(_enumero);
-                        if(_enumero.getM_instancia()==InstancaEntidad.MODIFY)
+                        if(_enumero.getM_instancia()==InstanciaEntidad.MODIFY)
                             _rpta=_daonumero.Modificar(_enumero);
                         if(!_rpta)
                             break;
                     }
                  }
             }
-            else if(x_parametro.getM_instancia()==InstancaEntidad.MODIFY)
+            else if(x_parametro.getM_instancia()==InstanciaEntidad.MODIFY)
             {
                     if(_daoparametro.Modificar(x_parametro))
                     {
@@ -72,9 +72,9 @@ public class BParametro {
                             _enumero=x_lsnumero.get(i);
                             _enumero.setPar_ncodigo(x_parametro.getPar_ncodigo());
                             _enumero.setSuc_ncodigo(x_parametro.getPar_nsucursal());
-                            if(_enumero.getM_instancia()==InstancaEntidad.NEW)
+                            if(_enumero.getM_instancia()==InstanciaEntidad.NEW)
                                 _rpta=_daonumero.Guardar(_enumero);
-                            if(_enumero.getM_instancia()==InstancaEntidad.MODIFY)
+                            if(_enumero.getM_instancia()==InstanciaEntidad.MODIFY)
                                 _rpta=_daonumero.Modificar(_enumero);
                             if(!_rpta)
                                 break;

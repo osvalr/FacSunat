@@ -8,7 +8,7 @@ import AccessoDato.ECliente;
 import AccessoDato.EDireccion;
 import AccessoDato.EPlaca;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -285,5 +285,23 @@ public class BCliente {
 
     public void setCon(Conector _con) {
         this._con = _con;
+    }
+    
+    public Boolean AcccionGuardarSolo(ECliente x_cli)
+    {
+        boolean _rpta=true;
+            _con = new Conector(false);        
+        try
+        {
+            _daocliente.setCon(_con);
+            _rpta= (_daocliente.Guardar(x_cli));
+  
+        }
+        catch(Exception e)
+        {
+           // _con.con.rollback();
+        }
+        finally{_con.Cerrar();}
+        return _rpta;
     }
 }

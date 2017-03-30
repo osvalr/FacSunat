@@ -2,7 +2,7 @@
 package Principal;
 
 import AccessoDato.EDireccion;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -121,13 +121,13 @@ public class FrmAdddireccion extends javax.swing.JInternalFrame {
                 if(m_Tipoinstancia==InstanciaForm.NEW)
                 {
                     _edireccion = new EDireccion();
-                    _edireccion.setM_Instancia(InstancaEntidad.NEW);
+                    _edireccion.setM_Instancia(InstanciaEntidad.NEW);
                     _edireccion.setDir_cdescripcion(txtdireccion.getText());
                     
                 }
                 else if(m_Tipoinstancia==InstanciaForm.MODIFY)
                 {
-                    _edireccion.setM_Instancia(InstancaEntidad.MODIFY);
+                    _edireccion.setM_Instancia(InstanciaEntidad.MODIFY);
                     _edireccion.setDir_cdescripcion(txtdireccion.getText());
                 }
             }

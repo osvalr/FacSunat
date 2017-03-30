@@ -3,7 +3,7 @@ package AccessoDato;
 
 import Utilidad.Conector;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class DAODireccion {
             pst.setInt(1, x_id);            
             ResultSet _rs = _con.EjecutarQuery(pst);            
             while(_rs.next())
-              _lsdireccion.add(new EDireccion(_rs.getInt("dir_ncodigo"), _rs.getString("dir_descripcion"),_rs.getInt("cli_ncodigo"),InstancaEntidad.UNCHANGUE));
+              _lsdireccion.add(new EDireccion(_rs.getInt("dir_ncodigo"), _rs.getString("dir_descripcion"),_rs.getInt("cli_ncodigo"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {
@@ -171,7 +171,7 @@ public class DAODireccion {
             ResultSet _rs=pst.executeQuery();
             if(_rs.next())
             {
-                _edireccion=new EDireccion(_rs.getInt("dir_ncodigo"), _rs.getString("dir_descripcion"), _rs.getInt("cli_ncodigo"), InstancaEntidad.UNCHANGUE);
+                _edireccion=new EDireccion(_rs.getInt("dir_ncodigo"), _rs.getString("dir_descripcion"), _rs.getInt("cli_ncodigo"), InstanciaEntidad.UNCHANGUE);
             }
             
         } catch (Exception e) {

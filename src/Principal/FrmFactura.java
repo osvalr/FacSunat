@@ -21,18 +21,19 @@ import Negocio.BPrecioVenta;
 import Utilidad.DisplayValue;
 import Utilidad.Formato;
 import Utilidad.GenerarXmml;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import javax.swing.JOptionPane;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
 import Utilidad.OtrasEntidad;
+import com.mxrck.autocompleter.TextAutoCompleter;
 import com.sun.javafx.scene.control.behavior.OptionalBoolean;
 import java.awt.Dimension;
-import java.awt.event.KeyAdapter;
+import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -40,9 +41,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.Calendar;
-import java.util.Optional;
 import javax.swing.JTable;
-import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 public class FrmFactura extends javax.swing.JInternalFrame {
 
     public InstanciaForm m_Tipoinstancia;
@@ -53,18 +52,16 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     private List<EDocumento> _lsdoc= new ArrayList<>();
     Vector _items=null;
     private DefaultComboBoxModel modelocmb=null;
-    private DefaultComboBoxModel _modeloruc;
-//    private DefaultComboBoxModel _modelonombrecliente;
-    private DefaultComboBoxModel _modeloplaca;
+//    private DefaultComboBoxModel _modeloruc;
+//    private DefaultComboBoxModel _modeloplaca;
     private DAOCliente _daocliente=null;
     private BPrecioVenta _beprecioventa=null;
     private EPrecioVenta _eprecioventa=null;
-    private ECliente _ecliente=null;
+    private ECliente ecliente=null;
     private double m_igv;
-//    private List<EPrecioVenta> _lsprecioventa;
-    private List<EFacturaDetalle> _lsdetallefac;
-    private EFacturaDetalle _edetallefac;
-    private EFactura _efactura;
+    private List<EFacturaDetalle> listaDetalleFactura;
+    private EFacturaDetalle eDetalleFactura;
+    private EFactura eFactura;
     private BFactura _bfactura;
 //    private BFacturaDetalle _bedetallefac;
     private GenerarXmml _generarxml;
@@ -77,9 +74,11 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     private BCliente _bcliente;
     private BDireccion _bdireccion;
     private EDireccion _edireccion;
-    private EPlaca _eplaca;
+    private EPlaca eplaca;
+    private List<DisplayValue> listaDisplay = new ArrayList<>();
     public String m_CodigoDocumento="";
-    
+    public List<ECliente> listaCliente; 
+    int idCliente;
     private FrmFactura() {
         initComponents();
     }
@@ -103,25 +102,21 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         txtdescripcionfactura = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        btnAddnuevocliente = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtdireccioncli = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        cmbdireccioncli = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         txtdescripcionart = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtcantidadaert = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
-        cmbplaca = new javax.swing.JComboBox<>();
         jLabel21 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        cmbbuscarruc = new javax.swing.JComboBox<>();
-        txtbuscartextocliente = new javax.swing.JTextField();
-        btncambiardocumento = new javax.swing.JButton();
-        lbnumerodocumento = new javax.swing.JLabel();
-        txtnumerodocnuevo = new javax.swing.JTextField();
+        txtBuscarClientexNombre = new javax.swing.JTextField();
+        txtBuscarClientexRuc = new javax.swing.JTextField();
+        txtBuscarPlaca = new javax.swing.JTextField();
+        txtBuscarDireccionSecundaria = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         txtanticipios = new javax.swing.JTextField();
         txtdescuento = new javax.swing.JTextField();
@@ -150,6 +145,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
             }
             public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
             }
@@ -194,7 +190,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnGuardar);
 
-        btnlimpiar.setIcon(new javax.swing.ImageIcon("D:\\FacturaElectronica-Modificado\\FacturaElectronica-24-06-2016\\img\\limpiar.png")); // NOI18N
+        btnlimpiar.setIcon(new javax.swing.ImageIcon("D:\\FE\\FacturaElectronica-24-06-2016\\img\\limpiar.png")); // NOI18N
         btnlimpiar.setText("Limpiar");
         btnlimpiar.setToolTipText("");
         btnlimpiar.setFocusable(false);
@@ -253,19 +249,9 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("(F1 Busqueda)");
 
-        btnAddnuevocliente.setIcon(new javax.swing.ImageIcon("D:\\FacturaElectronica-Modificado\\FacturaElectronica-24-06-2016\\img\\adduser.png")); // NOI18N
-        btnAddnuevocliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddnuevoclienteActionPerformed(evt);
-            }
-        });
-
         jLabel6.setText("Dirección");
 
         jLabel9.setText("Otras Direcciones");
-
-        cmbdireccioncli.setEditable(true);
-        cmbdireccioncli.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel10.setText("(F2 Busqueda)");
@@ -288,153 +274,121 @@ public class FrmFactura extends javax.swing.JInternalFrame {
 
         jLabel20.setText("Placa");
 
-        cmbplaca.setEditable(true);
-        cmbplaca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbplaca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbplacaActionPerformed(evt);
-            }
-        });
-
         jLabel21.setText("Numero Documento ");
 
-        jLabel3.setText("Referencia");
+        jLabel3.setText("Nota");
 
-        cmbbuscarruc.setEditable(true);
-        cmbbuscarruc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbbuscarruc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbbuscarrucActionPerformed(evt);
-            }
-        });
-
-        txtbuscartextocliente.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtBuscarClientexNombre.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtbuscartextoclienteKeyPressed(evt);
+                txtBuscarClientexNombreKeyPressed(evt);
             }
         });
 
-        btncambiardocumento.setIcon(new javax.swing.ImageIcon("D:\\FacturaElectronica-Modificado\\FacturaElectronica-24-06-2016\\img\\cambiartipodocumento.png")); // NOI18N
-        btncambiardocumento.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btncambiardocumentoActionPerformed(evt);
+        txtBuscarClientexRuc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscarClientexRucKeyPressed(evt);
             }
         });
 
-        lbnumerodocumento.setText("Numero Doc.");
+        txtBuscarPlaca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarPlacaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel3)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtdescripcionfactura, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                            .addComponent(jLabel7)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(jLabel10)
-                                            .addGap(145, 145, 145))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(cmbclase, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                                    .addComponent(cmbbuscarruc, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(btnAddnuevocliente, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(btncambiardocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addGap(81, 81, 81)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtBuscarClientexRuc, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel1)
-                                    .addComponent(txtdescripcionart, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(65, 65, 65)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(cmbdocumento, 0, 190, Short.MAX_VALUE)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cmbclase, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtdescripcionart, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel21)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel21)
-                                .addGap(115, 115, 115)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtnumerodocnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lbnumerodocumento))
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel10)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbdocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtBuscarClientexNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jLabel5))
-                                    .addComponent(txtbuscartextocliente, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel8)
-                                    .addComponent(txtcantidadaert, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(72, 72, 72)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel20)
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtcantidadaert, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel8))
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addGap(13, 13, 13)
+                                                .addComponent(jLabel20))
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txtBuscarPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(9, 9, 9)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel5)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel9)
                             .addComponent(jLabel6)
-                            .addComponent(cmbplaca, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtdireccioncli)))
-                    .addComponent(txtdescripcionfactura, javax.swing.GroupLayout.PREFERRED_SIZE, 822, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbdireccioncli, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
-                .addContainerGap(100, Short.MAX_VALUE))
+                            .addComponent(txtdireccioncli, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                            .addComponent(txtBuscarDireccionSecundaria))))
+                .addContainerGap(114, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
                     .addComponent(cmbclase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbdocumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6)
-                    .addComponent(lbnumerodocumento)
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(txtdireccioncli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtbuscartextocliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtnumerodocnuevo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cmbdireccioncli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(cmbbuscarruc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddnuevocliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btncambiardocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel7)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(txtBuscarClientexRuc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBuscarClientexNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addGap(5, 5, 5))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel20)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtcantidadaert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbplaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(txtdescripcionart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel7)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel10)
+                                .addComponent(jLabel8)
+                                .addComponent(jLabel20)))))
+                .addGap(11, 11, 11)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtdescripcionart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtcantidadaert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscarPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtBuscarDireccionSecundaria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -500,7 +454,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(640, Short.MAX_VALUE)
+                .addContainerGap(611, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -591,21 +545,25 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnadditem)
-                    .addComponent(btnquitar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 823, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnadditem)
+                            .addComponent(btnquitar))
+                        .addGap(0, 232, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -616,7 +574,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -645,50 +603,67 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                 if(m_Tipoinstancia==InstanciaForm.NEW)
                 {      
                          GetItem();
-                         GetDireccion();
+//                         GetDireccion();
                          GetPlaca();
-                         GetCliente();
-                         if(_efactura.getDoc_ccodigo().equals("01"))//-----------Caso que el documento sea FACTURA
-                         {
-                             if(_ecliente.getCli_ncodigo()==0)
-                                 _ecliente.setCoi_ccodigo("6");//-----------------Documento tipo ruc por defecto
-                         }
-                         else//---------------------------------------------------Caso que el documento sea BOLETA
-                         {
-                             if(!m_CodigoDocumento.equals(""))
-                                 _ecliente.setCoi_ccodigo(m_CodigoDocumento);//----Documento seleccionado
-                             else
-                                 _ecliente.setCoi_ccodigo("1");//------------------Documento Nacionalidad de identidad
-                             
-                         }
+                         //GetCliente();
+//                         if(_efactura.getDoc_ccodigo().equals("01"))//-----------Caso que el documento sea FACTURA
+//                         {
+//                             if(ecliente.getCli_ncodigo()==0)
+//                                 ecliente.setCoi_ccodigo("6");//-----------------Documento tipo ruc por defecto
+//                         }
+//                         else//---------------------------------------------------Caso que el documento sea BOLETA
+//                         {
+//                             if(!m_CodigoDocumento.equals(""))
+//                                 ecliente.setCoi_ccodigo(m_CodigoDocumento);//----Documento seleccionado
+//                             else
+//                                 ecliente.setCoi_ccodigo("1");//------------------Documento Nacionalidad de identidad
+//                             
+//                         }
                              
                         _generarxml = new GenerarXmml();//----------------------------------------------Generar XML SUNAT
                         _empresa=_bempresa.ObtenerUno(_parametro.getPar_nsucursal());
                         _generarxml.setEempresa(_empresa);
-                        _generarxml.setEcliente(_ecliente);
-                        _efactura.setFac_cserie(_parametro.getPar_cserie());
+                        _generarxml.setEcliente(ecliente);
+                        eFactura.setFac_cserie(_parametro.getPar_cserie());
                         int _incrementadonumero=(Integer.parseInt(_parametro.getPar_cnumero())+1);
-                        _efactura.setFac_cnumero(String.valueOf(_incrementadonumero));
-                        _efactura.setSuc_ncodigo(_parametro.getPar_nsucursal());
-                        _efactura.setVe_ncodigo(_parametro.getPar_nvendedor());
-                        _efactura.setMon_ccodigo(_parametro.getPar_cmoneda());
-                        _generarxml.setEfactura(_efactura);
-                        _generarxml.setLsdetfactura(_lsdetallefac);
+                        eFactura.setFac_cnumero(String.valueOf(_incrementadonumero));
+                        eFactura.setSuc_ncodigo(_parametro.getPar_nsucursal());
+                        eFactura.setVe_ncodigo(_parametro.getPar_nvendedor());
+                        eFactura.setMon_ccodigo(_parametro.getPar_cmoneda());
+                        _generarxml.setEfactura(eFactura);
+                        _generarxml.setLsdetfactura(listaDetalleFactura);
                          if(_generarxml.FillXml())//_generarxml.LlenarXMltoEntity())
                         {   
                             if(!_generarxml.Envio())
-                                JOptionPane.showMessageDialog(null, "ResponseCode :"+_generarxml.errResponseCode+ " Detalle :" +_generarxml.errDescription, "Respuesta Sunat.",JOptionPane.WARNING_MESSAGE);
+                            {    JOptionPane.showMessageDialog(null, "ResponseCode :"+_generarxml.errResponseCode+ " Detalle :" +_generarxml.errDescription, "Respuesta Sunat.",JOptionPane.WARNING_MESSAGE);
+                                                           
+                                         
+                            }
                             else
                             {
                                 JOptionPane.showMessageDialog(null, " Sunat :" +_generarxml.errDescription ,"Respuesta",JOptionPane.INFORMATION_MESSAGE);
-                                _efactura.setFac_cestado(_parametro.getPar_cestado());
-                                if(_bfactura.AccionGuardarCompleto(_efactura,_lsdetallefac,_parametro.getNum_ncodigo(),_edireccion,_eplaca,_ecliente))
+                                eFactura.setFac_cestado(_parametro.getPar_cestado());
+                                if(_bfactura.AccionGuardarCompleto(eFactura,listaDetalleFactura,_parametro.getNum_ncodigo(),_edireccion,eplaca,ecliente))
                                 {
-                                    JOptionPane.showMessageDialog(null, "Se guardado correctamente.", "Factura",JOptionPane.INFORMATION_MESSAGE);
+//                                    valorResumenFirma _fima= new valorResumenFirma();
+//                                    _fima.setRutaxml(_generarxml.rutaXmlCompleta);
+                                    JOptionPane.showMessageDialog(null, "Se guardado correctamente ");
+                                    //JOptionPane.showMessageDialog(null, "Se guardado correctamente :"+_generarxml.errDescription, "Factura",JOptionPane.INFORMATION_MESSAGE);
+                                   // leerNodoXml lectura = new leerNodoXml();
+//                                    lectura.setValorNodos(_fima);
+                                    //lectura.buscarNodo("ds:DigestValue","ds:SignatureValue");
+//                                    int tipoDocumento;
+//                                    if(_efactura.getDoc_ccodigo().equals("01"))
+//                                        tipoDocumento=1;
+//                                    else
+//                                        tipoDocumento=2;
+                                    //ImprimirDocumento obj=new ImprimirDocumento(lectura.getValorNodo(),tipoDocumento, _efactura.getFac_cserie()+"-"+_efactura.getFac_cnumero(),_efactura.getFac_ncodigo());
+                                    
+                                
                                 }
                             }
                         }
-                        _lsdetallefac.clear();
+                        listaDetalleFactura.clear();
                         m_Tipoinstancia=InstanciaForm.UNCHANGUE;   
                         ClearForm();
                         EstablecerInstancia();
@@ -721,7 +696,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                 _fmd= new Formato();
                 _bparametro = new BParametro();
                 _bempresa = new BEmpresa();
-                _lsdetallefac =new ArrayList<>();
+                listaDetalleFactura =new ArrayList<>();
                 _daootrasTablas = new DAOTablasSolas();
                 _lsdoc=_daootrasTablas.ObtenerDocumento();
                 cmbdocumento.removeAllItems();
@@ -739,24 +714,32 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                     _items.addElement(new DisplayValue(_otrosTipos.TipoPago[i][1], _otrosTipos.TipoPago[i][0]));
                 modelocmb = new DefaultComboBoxModel(_items);
                 cmbclase.setModel(modelocmb);
-                cmbdireccioncli.removeAllItems();
                 CargarformDetalle();
                 m_igv=_daootrasTablas.Obtenerigv();
                 txtigv.setText(String.valueOf(m_igv));
-                cmbbuscarruc.removeAllItems();
-//                DisplayValue _valor=(DisplayValue)cmbdocumento.getSelectedItem();
-//                _modeloruc=_bcliente.AcctionFiltrarClientexTipoDocumento(cmbbuscarruc.getEditor().getItem().toString(),_valor.getValueMenber());
-//                cmbbuscarruc.setModel(_modeloruc);
-//                AutoCompleteDecorator.decorate(cmbbuscarruc);
-                txtnumerodocnuevo.setVisible(false);
                 EstablecerInstancia();
                 txtcantidadaert.setDocument(new JTextFielCharLimit(MaximoCharacter.IntNumeroMaximoSimple));
                 txtdireccioncli.setDocument(new JTextFielCharLimit((MaximoCharacter.DocMaxCharDireccion)));
                 txtdescripcionfactura.setDocument(new JTextFielCharLimit((MaximoCharacter.StrdireccionSimple)));
-                txtbuscartextocliente.setDocument(new JTextFielCharLimit((MaximoCharacter.StrNombreCompletoSimple)));
-                cmbplaca.removeAllItems();
-                cmbdireccioncli.removeAllItems();
-                // _parametro=_bparametro.AccionObtenerConfiguracion(6,_valorDocumento.getValueMenber());/////////////////////////////estatico 1
+                txtBuscarClientexNombre.setDocument(new JTextFielCharLimit((MaximoCharacter.StrNombreCompletoSimple)));
+                listaCliente =_bcliente.ObtenerTodos();
+                txtBuscarPlaca.setDocument(new JTextFielCharLimit(MaximoCharacter.StrPlacaSimple));
+                
+                txtdescripcionfactura.addFocusListener(new FocusListener(){
+                    @Override
+                    public void focusGained(FocusEvent e) {
+                        //JOptionPane.showMessageDialog(rootPane, "Recibio el foco.");
+                        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        
+                         JOptionPane.showMessageDialog(rootPane, "Fin foco.");
+                        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                    }
+                    
+                });
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(null, "Se producjo un error inesperado :"+  e.getMessage());
@@ -778,40 +761,40 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                 {    
                     
                     //double 
-                    _edetallefac = new EFacturaDetalle();
-                    _edetallefac.setM_instancia(InstancaEntidad.NEW);
-                    _edetallefac.setArt_ncodigo(_eprecioventa.getArt_ncodigo());
-                    _edetallefac.setDfa_ccantidad(Integer.parseInt(txtcantidadaert.getText()));
-                    _edetallefac.setDfa_fvalorunitario(_fmd.Farmat2DosDecimales(_eprecioventa.getPve_fpreciounitario()));
-                    _edetallefac.setDfa_cnumeroitem(""+(_modeTable.getRowCount()+1));
-                    _edetallefac.setArt_cdescripcion(txtdescripcionart.getText());
-                    _edetallefac.setArt_ncodarticulo(""+_eprecioventa.getArt_ncodigo());
-                    _edetallefac.setPve_ctipoafectacion(Integer.parseInt(_eprecioventa.getPve_ctipoafectacion()));
+                    eDetalleFactura = new EFacturaDetalle();
+                    eDetalleFactura.setM_instancia(InstanciaEntidad.NEW);
+                    eDetalleFactura.setArt_ncodigo(_eprecioventa.getArt_ncodigo());
+                    eDetalleFactura.setDfa_ccantidad(Integer.parseInt(txtcantidadaert.getText()));
+                    eDetalleFactura.setDfa_fvalorunitario(_fmd.Farmat2DosDecimales(_eprecioventa.getPve_fpreciounitario()));
+                    eDetalleFactura.setDfa_cnumeroitem(""+(_modeTable.getRowCount()+1));
+                    eDetalleFactura.setArt_cdescripcion(txtdescripcionart.getText());
+                    eDetalleFactura.setArt_ncodarticulo(""+_eprecioventa.getArt_ncodigo());
+                    eDetalleFactura.setPve_ctipoafectacion(Integer.parseInt(_eprecioventa.getPve_ctipoafectacion()));
                     _cantidadxitem=_eprecioventa.getPve_fpreciounitario()* Integer.parseInt(txtcantidadaert.getText());                        
-                    _edetallefac.setDfa_fvalorsubtotal(_fmd.Farmat2DosDecimales(_cantidadxitem));
-                    _edetallefac.setDfa_fvalorventa(_eprecioventa.getPve_fprecioventa());
-                    _edetallefac.setUni_ncodigo(_eprecioventa.getUni_ccodigo());
-                    if(_edetallefac.getDfa_ccantidad()>_eprecioventa.getPve_ncantidad())//-preguntamos si la cantidad es mayor a la cantidad descuento 
+                    eDetalleFactura.setDfa_fvalorsubtotal(_fmd.Farmat2DosDecimales(_cantidadxitem));
+                    eDetalleFactura.setDfa_fvalorventa(_eprecioventa.getPve_fprecioventa());
+                    eDetalleFactura.setUni_ncodigo(_eprecioventa.getUni_ccodigo());
+                    if(eDetalleFactura.getDfa_ccantidad()>_eprecioventa.getPve_ncantidad())//-preguntamos si la cantidad es mayor a la cantidad descuento 
                     {
-                        double totaldescuento=_edetallefac.getDfa_fvalorsubtotal()*(_eprecioventa.getPve_nporcentajedescuento()/100.00);
-                        _edetallefac.setDfa_fdescuento(_fmd.Farmat2DosDecimales(totaldescuento));
-                        _cantidadxitem=_cantidadxitem-_edetallefac.getDfa_fdescuento();
+                        double totaldescuento=eDetalleFactura.getDfa_fvalorsubtotal()*(_eprecioventa.getPve_nporcentajedescuento()/100.00);
+                        eDetalleFactura.setDfa_fdescuento(_fmd.Farmat2DosDecimales(totaldescuento));
+                        _cantidadxitem=_cantidadxitem-eDetalleFactura.getDfa_fdescuento();
                     }
                     if(_eprecioventa.getArt_cafectacion().equals("01"))
                     {
                         
-                        _edetallefac.setDfa_fvaloritemigv(_fmd.Farmat2DosDecimales(_eprecioventa.getPve_fpreciounitario()*(m_igv/100)));
+                        eDetalleFactura.setDfa_fvaloritemigv(_fmd.Farmat2DosDecimales(_eprecioventa.getPve_fpreciounitario()*(m_igv/100)));
                         _totaligv=_fmd.Farmat2DosDecimales(_cantidadxitem*(m_igv/100));
-                        _edetallefac.setDfa_fvalortotal(_fmd.Farmat2DosDecimales(_cantidadxitem+_totaligv)); 
+                        eDetalleFactura.setDfa_fvalortotal(_fmd.Farmat2DosDecimales(_cantidadxitem+_totaligv)); 
                     }
                     else if (_eprecioventa.getArt_cafectacion().equals("02") || _eprecioventa.getArt_cafectacion().equals("03"))
-                    {        _edetallefac.setDfa_fvaloritemigv(0.0);
-                            _edetallefac.setDfa_fvalortotal(_fmd.Farmat2DosDecimales(_cantidadxitem+0.0)); 
+                    {        eDetalleFactura.setDfa_fvaloritemigv(0.0);
+                            eDetalleFactura.setDfa_fvalortotal(_fmd.Farmat2DosDecimales(_cantidadxitem+0.0)); 
                     }
                     
-                    _edetallefac.setArt_cafectacion(_eprecioventa.getArt_cafectacion());
-                    _modeTable.addRow(new Object[] {""+(_modeTable.getRowCount()+1),_eprecioventa.getArt_ncodigo(),_eprecioventa.getArt_cdescripcion(),""+_eprecioventa.getUni_cdescripcion(),""+txtcantidadaert.getText(),""+_eprecioventa.getPve_fpreciounitario(),""+_edetallefac.getDfa_fdescuento(),_eprecioventa.getArt_cafecdescripcion(),""+ _fmd.Farmat2DosDecimales(_cantidadxitem),"NEW"});
-                    _lsdetallefac.add(_edetallefac);
+                    eDetalleFactura.setArt_cafectacion(_eprecioventa.getArt_cafectacion());
+                    _modeTable.addRow(new Object[] {""+(_modeTable.getRowCount()+1),_eprecioventa.getArt_ncodigo(),_eprecioventa.getArt_cdescripcion(),""+_eprecioventa.getUni_cdescripcion(),""+txtcantidadaert.getText(),""+_eprecioventa.getPve_fpreciounitario(),""+eDetalleFactura.getDfa_fdescuento(),_eprecioventa.getArt_cafecdescripcion(),""+ _fmd.Farmat2DosDecimales(_cantidadxitem),"NEW"});
+                    listaDetalleFactura.add(eDetalleFactura);
                     _eprecioventa=null;
                     txtcantidadaert.setText("");
                     txtdescripcionart.setText("");
@@ -844,10 +827,10 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                     int indice=tdetallefactura.getSelectedRow();
                     String _codigoItem=tdetallefactura.getValueAt(indice, 0).toString();
                     String _codigoArticulo=tdetallefactura.getValueAt(indice, 1).toString();
-                    for(int i=0;i<=_lsdetallefac.size()-1;i++)
+                    for(int i=0;i<=listaDetalleFactura.size()-1;i++)
                     {
-                        if(_lsdetallefac.get(i).getArt_ncodarticulo().equals(_codigoArticulo)&&_lsdetallefac.get(i).getDfa_cnumeroitem().equals(_codigoItem))
-                           _lsdetallefac.remove(i);
+                        if(listaDetalleFactura.get(i).getArt_ncodarticulo().equals(_codigoArticulo)&&listaDetalleFactura.get(i).getDfa_cnumeroitem().equals(_codigoItem))
+                           listaDetalleFactura.remove(i);
                         
                     }
                             
@@ -855,13 +838,13 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                 else if(tdetallefactura.getValueAt(_filaselecionada, 0).toString().equals("MODIFY")||tdetallefactura.getValueAt(_filaselecionada, 0).toString().equals("UNCHANGUE"))
                 {
                     String _codigo= tdetallefactura.getValueAt(_filaselecionada, 0).toString();
-                    for(int i=0;i<=_lsdetallefac.size()-1;i++)
+                    for(int i=0;i<=listaDetalleFactura.size()-1;i++)
                     {
-                        _edetallefac=_lsdetallefac.get(i);
-                        if(_edetallefac.getArt_ncodigo() ==Integer.parseInt(_codigo))
+                        eDetalleFactura=listaDetalleFactura.get(i);
+                        if(eDetalleFactura.getArt_ncodigo() ==Integer.parseInt(_codigo))
                         {
-                            _edetallefac.setM_instancia(InstancaEntidad.DELETE);
-                            _lsdetallefac.set(i, _edetallefac);
+                            eDetalleFactura.setM_instancia(InstanciaEntidad.DELETE);
+                            listaDetalleFactura.set(i, eDetalleFactura);
                         }
                     }
                 }
@@ -884,24 +867,17 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         {
              DisplayValue _valorDocumento=(DisplayValue)cmbdocumento.getSelectedItem();
              _parametro=_bparametro.AccionObtenerConfiguracion(6,_valorDocumento.getValueMenber());
-             cmbbuscarruc.removeAllItems();
-             _modeloruc=_bcliente.AcctionFiltrarClientexTipoDocumento(cmbbuscarruc.getEditor().getItem().toString(),_valorDocumento.getValueMenber());
-             cmbbuscarruc.setModel(_modeloruc);
              if(_valorDocumento.getValueMenber().equals("01"))
-                 txtnumerodocnuevo.setDocument(new JTextFielCharLimit((MaximoCharacter.DocuMaxCharRuc)));
+                 txtBuscarClientexRuc.setDocument(new JTextFielCharLimit((MaximoCharacter.DocuMaxCharRuc)));
              else
-                 txtnumerodocnuevo.setDocument(new JTextFielCharLimit((MaximoCharacter.DocMaxCharDni)));
+                 txtBuscarClientexRuc.setDocument(new JTextFielCharLimit((MaximoCharacter.DocMaxCharDni)));
              txtdireccioncli.setText("");
-             txtbuscartextocliente.setText("");
+             txtBuscarClientexNombre.setText("");
         }
     }//GEN-LAST:event_cmbdocumentoActionPerformed
     FrmCliente objCli;
     Dimension desktopSize; 
     Dimension Internal;
-    private void btnAddnuevoclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddnuevoclienteActionPerformed
-            CambiarRegistrocliente();
-    }//GEN-LAST:event_btnAddnuevoclienteActionPerformed
-
     private void txtcantidadaertKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcantidadaertKeyTyped
        char c=evt.getKeyChar();
         if(!(Character.isDigit(c)||(c==KeyEvent.VK_BACK_SPACE)||(c==KeyEvent.VK_DELETE)))
@@ -910,46 +886,8 @@ public class FrmFactura extends javax.swing.JInternalFrame {
             evt.consume();
         }
     }//GEN-LAST:event_txtcantidadaertKeyTyped
-
-    private void cmbbuscarrucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbbuscarrucActionPerformed
-        if(cmbbuscarruc.getSelectedIndex()>=1)
-        {
-            DisplayValue _valor=(DisplayValue)cmbbuscarruc.getSelectedItem();
-            if(!_valor.getValueMenber().equals("-1"))//_ecliente.getCli_ncodigo()!=null)
-            {
-                  m_Codigo=_valor.getValueMenber();
-                  CargarCliente(OptionalBoolean.TRUE);
-            }
-        }
-    }//GEN-LAST:event_cmbbuscarrucActionPerformed
-    FrmTipoDocumento frmdocumento;
-    private void btncambiardocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncambiardocumentoActionPerformed
-        try {
-                if(frmdocumento==null)
-                {
-                    frmdocumento = FrmTipoDocumento.getinstacia();
-                    frmdocumento.setFrmfactura(this);
-                    frmdocumento.m_Tipoinstancia=InstanciaForm.UNCHANGUE;
-                    frmdocumento.m_escritorio=m_escritorio;
-                    desktopSize = m_escritorio.getSize();
-                    Internal = frmdocumento.getSize();
-                    frmdocumento.setLocation((desktopSize.width - Internal.width)/2,(desktopSize.height- Internal.height)/2);
-                    frmdocumento.setVisible(true);  
-                    m_escritorio.add(frmdocumento);
-                    frmdocumento.setSelected(true);
-                }
-                else
-                {
-                    frmdocumento.setFrmfactura(this);
-                    desktopSize = m_escritorio.getSize();
-                    Internal = frmdocumento.getSize();
-                    frmdocumento.setLocation((desktopSize.width - Internal.width)/2,(desktopSize.height- Internal.height)/2);
-                    frmdocumento.setVisible(true);
-                    frmdocumento.setSelected(true); 
-            }
-        } catch (PropertyVetoException e) {        }
-    }//GEN-LAST:event_btncambiardocumentoActionPerformed
-    private void txtbuscartextoclienteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtbuscartextoclienteKeyPressed
+    //FrmTipoDocumento frmdocumento;
+    private void txtBuscarClientexNombreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarClientexNombreKeyPressed
         try {
             if(evt.getKeyCode()==KeyEvent.VK_F1)
         {
@@ -959,7 +897,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
             _buscar.show();
         }
         } catch (Exception e) {JOptionPane.showMessageDialog(null, "Error :"+e.getMessage(),"Mensaje",JOptionPane.WARNING_MESSAGE);   }
-    }//GEN-LAST:event_txtbuscartextoclienteKeyPressed
+    }//GEN-LAST:event_txtBuscarClientexNombreKeyPressed
     private void txtdescripcionartKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtdescripcionartKeyPressed
         try {
             if(evt.getKeyCode()==KeyEvent.VK_F2)
@@ -977,9 +915,152 @@ public class FrmFactura extends javax.swing.JInternalFrame {
        EstablecerInstancia();
     }//GEN-LAST:event_btnlimpiarActionPerformed
 
-    private void cmbplacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbplacaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbplacaActionPerformed
+    private void txtBuscarClientexRucKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarClientexRucKeyPressed
+        
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER)
+        {
+            String numeroDocumento=txtBuscarClientexRuc.getText();
+            DisplayValue _valor=(DisplayValue) cmbdocumento.getSelectedItem();
+            boolean _estadoRegistro=_valor.getValueMenber().equals("01");
+            if(listaCliente.stream().filter(c-> c.getCli_cnumerodoc().equals(numeroDocumento)).count()==0)
+            {
+                int dialogButton=JOptionPane.showConfirmDialog (null, "No se encontro ningun resultado. Desea Crear un nuevo Cliente.","Agregar Cliente",JOptionPane.YES_NO_OPTION);
+
+                if(dialogButton == JOptionPane.YES_OPTION)
+                { 
+                    FrmAgregarClienteRapido _addCliente = new FrmAgregarClienteRapido(_estadoRegistro);
+                    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+                    int x = (int) ((dimension.getWidth() - _addCliente.getWidth()) / 2);
+                    int y = (int) ((dimension.getHeight() - _addCliente.getHeight()) / 2);
+                    _addCliente.setLocation(x, y);
+                    _addCliente.setModal(true);
+                    _addCliente.setVisible(true);
+                    idCliente=_addCliente.idCliente;
+                    if(idCliente!=0)
+                    {
+                        listaCliente = _bcliente.ObtenerTodos();
+                        ecliente =listaCliente.stream().filter(f->f.getCli_ncodigo()==idCliente).findFirst().orElse(null);
+                        CargarCliente(OptionalBoolean.FALSE);
+                    }
+                }
+                else
+                {
+                    //ecliente= listaCliente.stream().filter(f->f.getCli_cnumerodoc()==numeroDocumento).findFirst().orElse(null);
+                }
+                
+            }else
+            {
+                 ecliente= listaCliente.stream().filter(f->f.getCli_cnumerodoc().equals(numeroDocumento)).findFirst().orElse(null);
+                 CargarCliente(OptionalBoolean.FALSE);
+                 CargarPlacaCliente();
+            }
+        }
+    }//GEN-LAST:event_txtBuscarClientexRucKeyPressed
+
+    private void txtBuscarPlacaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarPlacaKeyReleased
+        
+        
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER)
+        {
+            String nombrePlaca=txtBuscarPlaca.getText();
+            if(listaDisplay.stream().filter(c-> c.toString().equals(nombrePlaca)).count()==0)
+            {
+                int dialogButton=JOptionPane.showConfirmDialog (null, "No se encontro ningun resultado. Desea Crear una nueva Placa.","Agregar Placa",JOptionPane.YES_NO_OPTION);
+
+                if(dialogButton == JOptionPane.YES_OPTION)
+                { 
+                    eplaca = new EPlaca();
+                    eplaca.setM_instancia(InstanciaEntidad.NEW);
+                    eplaca.setPla_cnombre(txtBuscarPlaca.getText());
+                    eplaca.setCli_ncodigo(ecliente.getCli_ncodigo());
+                }
+                else
+                {
+                }
+                
+            }else
+            {
+                 DisplayValue _elemento= listaDisplay.stream().filter(f->f.toString().equals(nombrePlaca)).findFirst().orElse(null);
+                 if(_elemento!=null)
+                 {
+                     _bplaca = new BPlaca();
+                     eplaca= _bplaca.AcctionObtenerUnaPlacaxId(Integer.parseInt((_elemento.getValueMenber())));
+                 }
+                 
+            }
+        }
+    }//GEN-LAST:event_txtBuscarPlacaKeyReleased
+
+    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
+       try
+        {
+//                _bcliente = new BCliente();
+//                _bfactura = new BFactura();
+//                _fmd= new Formato();
+//                _bparametro = new BParametro();
+//                _bempresa = new BEmpresa();
+//                listaDetalleFactura =new ArrayList<>();
+//                _daootrasTablas = new DAOTablasSolas();
+//                _lsdoc=_daootrasTablas.ObtenerDocumento();
+//                cmbdocumento.removeAllItems();
+//                _items = new Vector();
+//                for (int i=0;i<=_lsdoc.size()-1;i++)
+//                {
+//                    if(!_lsdoc.get(i).getDoc_ccodigo().equals("07")&&!_lsdoc.get(i).getDoc_ccodigo().equals("08"))
+//                    _items.addElement(new DisplayValue(_lsdoc.get(i).getDoc_cdescripcion(), _lsdoc.get(i).getDoc_ccodigo()));
+//                }
+//                modelocmb = new DefaultComboBoxModel(_items);
+//                cmbdocumento.setModel(modelocmb);
+//                _items = new Vector();
+//                _otrosTipos = new OtrasEntidad();
+//                for (int i=0;i<=_otrosTipos.TipoPago.length-1;i++)
+//                    _items.addElement(new DisplayValue(_otrosTipos.TipoPago[i][1], _otrosTipos.TipoPago[i][0]));
+//                modelocmb = new DefaultComboBoxModel(_items);
+//                cmbclase.setModel(modelocmb);
+//                CargarformDetalle();
+//                m_igv=_daootrasTablas.Obtenerigv();
+//                txtigv.setText(String.valueOf(m_igv));
+//                EstablecerInstancia();
+//                txtcantidadaert.setDocument(new JTextFielCharLimit(MaximoCharacter.IntNumeroMaximoSimple));
+//                txtdireccioncli.setDocument(new JTextFielCharLimit((MaximoCharacter.DocMaxCharDireccion)));
+//                txtdescripcionfactura.setDocument(new JTextFielCharLimit((MaximoCharacter.StrdireccionSimple)));
+//                txtBuscarClientexNombre.setDocument(new JTextFielCharLimit((MaximoCharacter.StrNombreCompletoSimple)));
+//                listaCliente =_bcliente.ObtenerTodos();
+//                txtBuscarPlaca.setDocument(new JTextFielCharLimit(MaximoCharacter.StrPlacaSimple));
+//                
+//                txtdescripcionfactura.addFocusListener(new FocusListener(){
+//                    @Override
+//                    public void focusGained(FocusEvent e) {
+//                       // JOptionPane.showMessageDialog(rootPane, "Recibio el foco.");
+//                        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                    }
+//
+//                    @Override
+//                    public void focusLost(FocusEvent e) {
+//                        
+//                         JOptionPane.showMessageDialog(rootPane, "Recibio el foco.");
+//                        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                    }
+//                    
+//                });
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Se producjo un error inesperado :"+  e.getMessage());
+        }
+    }//GEN-LAST:event_formInternalFrameActivated
+    TextAutoCompleter textAutoAcompleter;
+    public void CargarPlacaCliente()
+    {
+        _bplaca = new BPlaca();
+        listaDisplay=_bplaca.AccionObtenerListaPlacasxIdCliente(ecliente.getCli_ncodigo());
+        if(listaDisplay.size()>0)
+        {
+            textAutoAcompleter = new TextAutoCompleter( txtBuscarPlaca );
+            textAutoAcompleter.addItems(listaDisplay.toArray());
+            
+        }
+        
+    }
     public void EstablecerInstancia()
     {
         switch (m_Tipoinstancia)
@@ -997,19 +1078,14 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                         txtdescripcionart.setEnabled(true);
                         txtcantidadaert.setEnabled(true);
                         tdetallefactura.setEnabled(true);
-//                        cmbdireccioncli.setEnabled(true);
-                        btnAddnuevocliente.setEnabled(true);
-                        btncambiardocumento.setEnabled(true);
-                        cmbplaca.setEnabled(true);
-                        cmbbuscarruc.setEnabled(true);
-                        txtbuscartextocliente.setEnabled(true);
-                        cmbdireccioncli.setEnabled(true);
+                        txtBuscarClientexNombre.setEnabled(true);
+                        txtBuscarPlaca.setEnabled(true);
+                        txtBuscarClientexRuc.setEnabled(true);
                         break;
                     case MODIFY :
                         btnGuardar.setEnabled(true);
                         btnNuevo.setEnabled(false);
                         btnBuscar.setEnabled(false);
-                        btnAddnuevocliente.setEnabled(true);
                         break;
                     case UNCHANGUE:
                         m_Codigo="";
@@ -1025,55 +1101,49 @@ public class FrmFactura extends javax.swing.JInternalFrame {
                         txtdescripcionart.setEnabled(false);
                         txtcantidadaert.setEnabled(false);
                         tdetallefactura.setEnabled(false);
-                        cmbdireccioncli.setEnabled(false);
-                        btnAddnuevocliente.setEnabled(false);
                         txtdireccioncli.setEnabled(false);
-                        cmbplaca.setEnabled(false);
-                        cmbbuscarruc.setEnabled(false);
-                        txtbuscartextocliente.setEnabled(false);
-                        btncambiardocumento.setEnabled(false);
-                        lbnumerodocumento.setVisible(false);
-                        txtnumerodocnuevo.setVisible(false);
-                        cmbdireccioncli.setEnabled(false);
+                        txtBuscarClientexNombre.setEnabled(false);
+                        txtBuscarPlaca.setEnabled(false);
+                        txtBuscarClientexRuc.setEnabled(false);
                         break;
                         
                 }
     }
     public void CargarCliente( OptionalBoolean flag)
     {        
-        try
-        {
-            if(m_Tipoinstancia==InstanciaForm.NEW)
-              _efactura= new EFactura();
-            if(!"".equals(m_Codigo))
-            {
-                _daocliente = new DAOCliente();
-                _ecliente=_daocliente.ObtenerUno(Integer.parseInt(m_Codigo));
-                if(_ecliente!=null)
-                {
-                   if(flag.equals(false))
-                   {
-                       String _codigoCliente=(String.valueOf(_ecliente.getCli_ncodigo()));//DisplayValue _valor=(DisplayValue)_modeloruc.getElementAt(i);
-                        for(int i=0;i<=_modeloruc.getSize()-1;i++)
-                        {
-                            DisplayValue _valor=(DisplayValue)_modeloruc.getElementAt(i);
-                            if(_codigoCliente.equals(_valor.getValueMenber()))
-                            {
-                                _modeloruc.setSelectedItem(_valor);
-                                break;
-                            }
-                        }
-                        cmbbuscarruc.setModel(_modeloruc);
-                   }
-                    txtbuscartextocliente.setText(_ecliente.getCli_crazon());
-                    txtdireccioncli.setText(_ecliente.getCli_cdireccionfiscal());
-                    ObtenerplacaCliente();
-                    ObtenerDireccionCliente();
-                }  
-            }
-        }
-        catch(Exception e)
-        {         JOptionPane.showMessageDialog(null, "Error :"+e.getMessage(),"Mensaje",JOptionPane.WARNING_MESSAGE);  }
+//        try
+//        {
+//            if(m_Tipoinstancia==InstanciaForm.NEW)
+//              _efactura= new EFactura();
+//            if(!"".equals(m_Codigo))
+//            {
+//                _daocliente = new DAOCliente();
+//                ecliente=_daocliente.ObtenerUno(Integer.parseInt(m_Codigo));
+//                if(ecliente!=null)
+//                {
+//                   if(flag.equals(false))
+//                   {
+//                       String _codigoCliente=(String.valueOf(ecliente.getCli_ncodigo()));//DisplayValue _valor=(DisplayValue)_modeloruc.getElementAt(i);
+//                        for(int i=0;i<=_modeloruc.getSize()-1;i++)
+//                        {
+//                            DisplayValue _valor=(DisplayValue)_modeloruc.getElementAt(i);
+//                            if(_codigoCliente.equals(_valor.getValueMenber()))
+//                            {
+//                                _modeloruc.setSelectedItem(_valor);
+//                                break;
+//                            }
+//                        }
+//                        cmbbuscarruc.setModel(_modeloruc);
+//                   }
+                    txtBuscarClientexNombre.setText(ecliente.getCli_crazon());
+                    txtdireccioncli.setText(ecliente.getCli_cdireccionfiscal());
+                   // ObtenerplacaCliente();
+                  //  ObtenerDireccionCliente();
+//                }  
+//            }
+//        }
+//        catch(Exception e)
+//        {         JOptionPane.showMessageDialog(null, "Error :"+e.getMessage(),"Mensaje",JOptionPane.WARNING_MESSAGE);  }
     }
     public void CargarArticulo()
     {
@@ -1170,20 +1240,17 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     {
         try
         {
-            txtbuscartextocliente.setText("");
-            txtnumerodocnuevo.setText("");
+            txtBuscarClientexNombre.setText("");
             txtdescripcionfactura.setText("");
             txtdescripcionart.setText("");
             txtdireccioncli.setText("");
             txtcantidadaert.setText("");
+            txtBuscarPlaca.setText("");
+            txtBuscarDireccionSecundaria.setText("");
             cmbdocumento.setSelectedIndex(0);
             cmbclase.setSelectedIndex(0);
             DefaultTableModel dtm = (DefaultTableModel) tdetallefactura.getModel();
             dtm.setNumRows(0);
-            txtnumerodocnuevo.setVisible(false);
-            btnAddnuevocliente.setIcon(new javax.swing.ImageIcon("D:\\FacturaElectronica-Modificado\\FacturaElectronica-24-06-2016\\img\\adduser.png"));
-            cmbplaca.getEditor().setItem("");
-            cmbdireccioncli.getEditor().setItem("");
         }
         catch(Exception e)
         {}
@@ -1196,13 +1263,7 @@ public class FrmFactura extends javax.swing.JInternalFrame {
             cmbdocumento.setFocusable(true);
             return false;        
         }
-        if(!txtnumerodocnuevo.isVisible())
-        {
-            if(_ecliente.getCli_ncodigo()==0){
-            JOptionPane.showMessageDialog(null, "Seleccione un Cliente.", "Mensaje",JOptionPane.WARNING_MESSAGE);
-            return false;}
-        }
-        if(_lsdetallefac.isEmpty())
+        if(listaDetalleFactura.isEmpty())
         {
             JOptionPane.showMessageDialog(null, "Ingrese un detalle.", "Mensaje",JOptionPane.WARNING_MESSAGE);
             txtdescripcionart.setFocusable(true);
@@ -1214,52 +1275,50 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     {
         try
         {
-                         if(txtnumerodocnuevo.isVisible())
-                            _efactura = new EFactura();
-                         
-                         _efactura.setFac_cdescripcion(txtdescripcionfactura.getText());
-                         _efactura.setLey_ncodigo(1);
-                         java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                         _efactura.setFac_dfechaemision(date);
-                          DisplayValue _valor = ((DisplayValue)cmbdocumento.getSelectedItem());            
-                         _efactura.setDoc_ccodigo(_valor.getValueMenber());
-                         _valor = ((DisplayValue)cmbclase.getSelectedItem());            
-                         _efactura.setFac_cclasepago(_valor.getValueMenber());
-                         double _totaligv=0;
-                         double _subtotal=0;
-                         double _netototal=0;
-                         double _totalexonerada=0;
-                         double _totalinafecta=0;
-                         for (int i=0;i<=_lsdetallefac.size()-1;i++)
-                         {
-                             if(_lsdetallefac.get(i).getDfa_fdescuento()>0)
-                                 _totaligv+=(_lsdetallefac.get(i).getDfa_fvalorsubtotal()*(m_igv/100));
+                        eFactura = new EFactura();
+                        eFactura.setCli_ncodigo(ecliente.getCli_ncodigo());
+                        eFactura.setFac_cdescripcion(txtdescripcionfactura.getText());
+                        eFactura.setLey_ncodigo(1);
+                        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                        eFactura.setFac_dfechaemision(date);
+                         DisplayValue _valor = ((DisplayValue)cmbdocumento.getSelectedItem());            
+                        eFactura.setDoc_ccodigo(_valor.getValueMenber());
+                        _valor = ((DisplayValue)cmbclase.getSelectedItem());            
+                        eFactura.setFac_cclasepago(_valor.getValueMenber());
+                        double _totaligv=0;
+                        double _subtotal=0;
+                        double _netototal=0;
+                        double _totalexonerada=0;
+                        double _totalinafecta=0;
+                        for (int i=0;i<=listaDetalleFactura.size()-1;i++)
+                        {
+                             if(listaDetalleFactura.get(i).getDfa_fdescuento()>0)
+                                 _totaligv+=(listaDetalleFactura.get(i).getDfa_fvalorsubtotal()*(m_igv/100));
                              else
-                             _totaligv+=(_lsdetallefac.get(i).getDfa_fvaloritemigv()*_lsdetallefac.get(i).getDfa_ccantidad());
+                             _totaligv+=(listaDetalleFactura.get(i).getDfa_fvaloritemigv()*listaDetalleFactura.get(i).getDfa_ccantidad());
                              
-                             switch (_lsdetallefac.get(i).getArt_cafectacion()) {
+                             switch (listaDetalleFactura.get(i).getArt_cafectacion()) {
                                  case "01":
-                                     _subtotal+=_lsdetallefac.get(i).getDfa_fvalorsubtotal();
+                                     _subtotal+=listaDetalleFactura.get(i).getDfa_fvalorsubtotal();
                                      break;
                                  case "02":
-                                     _totalexonerada+=_lsdetallefac.get(i).getDfa_fvalortotal();
+                                     _totalexonerada+=listaDetalleFactura.get(i).getDfa_fvalortotal();
                                      break;
                                  case "03":
-                                     _totalinafecta+=_lsdetallefac.get(i).getDfa_fvalortotal();
+                                     _totalinafecta+=listaDetalleFactura.get(i).getDfa_fvalortotal();
                                      break;
                                  default:
                                      break;
                              }
-                             _netototal+=_lsdetallefac.get(i).getDfa_fvalortotal();
-                         }
-                         _efactura.setFac_igv(_fmd.Farmat2DosDecimales(_totaligv));
-                         _efactura.setFac_fimportesubtotal(_fmd.Farmat2DosDecimales(_subtotal));
-                         _efactura.setFac_ftotal(_fmd.Farmat2DosDecimales(_netototal));
-                         _efactura.setFac_ftotalexonerado(_totalexonerada);
-                         _efactura.setFac_ftotalinafecto(_totalinafecta);
-                         _efactura.setFac_ftotalisc(_fmd.Farmat2DosDecimales(Double.parseDouble(txtisc.getText()))); //--------------------------CARGANTO OTROS y ISC
-                         _efactura.setFac_ftotalotrostributos(_fmd.Farmat2DosDecimales(Double.parseDouble(txttributos.getText())));
-
+                             _netototal+=listaDetalleFactura.get(i).getDfa_fvalortotal();
+                        }
+                        eFactura.setFac_igv(_fmd.Farmat2DosDecimales(_totaligv));
+                        eFactura.setFac_fimportesubtotal(_fmd.Farmat2DosDecimales(_subtotal));
+                        eFactura.setFac_ftotal(_fmd.Farmat2DosDecimales(_netototal));
+                        eFactura.setFac_ftotalexonerado(_totalexonerada);
+                        eFactura.setFac_ftotalinafecto(_totalinafecta);
+                        eFactura.setFac_ftotalisc(_fmd.Farmat2DosDecimales(Double.parseDouble(txtisc.getText()))); //--------------------------CARGANTO OTROS y ISC
+                        eFactura.setFac_ftotalotrostributos(_fmd.Farmat2DosDecimales(Double.parseDouble(txttributos.getText())));
         }
         catch(Exception e)
         {    }
@@ -1274,31 +1333,6 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         }
         return true;
     }
-    private void ObtenerplacaCliente()
-    {
-        try {
-            if(!m_Codigo.equals(""))
-            {
-                cmbplaca.removeAllItems();
-                _bplaca = new BPlaca();
-                _modeloplaca=_bplaca.AccionObtenerPlacaxCliente(Integer.parseInt(m_Codigo));
-                cmbplaca.setModel(_modeloplaca);
-            }
-        } catch (Exception e) {
-        }
-    }
-    private void ObtenerDireccionCliente()
-    {
-        try {
-            if(!m_Codigo.equals(""))
-            {
-                _bdireccion = new BDireccion();
-                DefaultComboBoxModel modelodireccion=_bdireccion.AccionObtenerDireccionxClienteFacturacion(Integer.parseInt(m_Codigo));
-                cmbdireccioncli.setModel(modelodireccion);
-            }
-        } catch (Exception e) {
-        }
-    }
     private static FrmFactura m_frmfactura;
     public static FrmFactura getinstancia()
     {
@@ -1307,19 +1341,14 @@ public class FrmFactura extends javax.swing.JInternalFrame {
         return m_frmfactura;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAddnuevocliente;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnadditem;
-    private javax.swing.JButton btncambiardocumento;
     private javax.swing.JButton btnlimpiar;
     private javax.swing.JButton btnquitar;
-    private javax.swing.JComboBox<String> cmbbuscarruc;
     private javax.swing.JComboBox<String> cmbclase;
-    private javax.swing.JComboBox<String> cmbdireccioncli;
     private javax.swing.JComboBox<String> cmbdocumento;
-    private javax.swing.JComboBox<String> cmbplaca;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1345,10 +1374,12 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel lbnumerodocumento;
     private javax.swing.JTable tdetallefactura;
+    private javax.swing.JTextField txtBuscarClientexNombre;
+    private javax.swing.JTextField txtBuscarClientexRuc;
+    private javax.swing.JTextField txtBuscarDireccionSecundaria;
+    private javax.swing.JTextField txtBuscarPlaca;
     private javax.swing.JTextField txtanticipios;
-    private javax.swing.JTextField txtbuscartextocliente;
     private javax.swing.JTextField txtcantidadaert;
     private javax.swing.JTextField txtcargos;
     private javax.swing.JTextField txtdescripcionart;
@@ -1358,7 +1389,6 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtigv;
     private javax.swing.JTextField txtimportetotal;
     private javax.swing.JTextField txtisc;
-    private javax.swing.JTextField txtnumerodocnuevo;
     private javax.swing.JTextField txtsubtotal;
     private javax.swing.JTextField txttributos;
     private javax.swing.JTextField txtvalorventa;
@@ -1371,99 +1401,37 @@ public class FrmFactura extends javax.swing.JInternalFrame {
     }
     private void GetDireccion() {
         try {
-            String _stritem=cmbdireccioncli.getEditor().getItem().toString();
-            if(cmbdireccioncli.getSelectedIndex()==-1)
-            {
-                if(_stritem.length()>0)
-                {
-                    _edireccion = new EDireccion();
-                    _edireccion.setM_Instancia(InstancaEntidad.NEW);
-                    _edireccion.setDir_cdescripcion(_stritem);
-                }
-            }
-            else
-            {
-                if(_ecliente.getCli_ncodigo()!=0)
-                {
-                    _edireccion = new EDireccion();
-                    _edireccion.setM_Instancia(InstancaEntidad.UNCHANGUE);
-                    _edireccion.setDir_cdescripcion(_stritem);
-                    _edireccion.setCli_ncodigo(_ecliente.getCli_ncodigo());
-                }
-            }
+           
         } catch (Exception e) {
         }
     }
     private void GetPlaca() {
         try {
-            if(cmbplaca.getSelectedIndex()==-1)
-            {
-                String _stritem=cmbplaca.getEditor().getItem().toString();
-                if(_stritem.length()>0)
-                {
-                    _eplaca = new EPlaca();
-                    _eplaca.setM_instancia(InstancaEntidad.NEW);
-                    _eplaca.setPla_cnombre(_stritem);
-                }else
-                    _eplaca=null;
-            }
-            else{
-                _eplaca=new EPlaca();
-                if(_ecliente.getCli_ncodigo()!=0)
-                {
-                    DisplayValue displaplaca=(DisplayValue)cmbplaca.getSelectedItem();
-                    _eplaca.setM_instancia(InstancaEntidad.UNCHANGUE);
-                    _eplaca.setPla_ncodigo(Integer.parseInt(displaplaca.getValueMenber()));
-                    _eplaca.setCli_ncodigo(_ecliente.getCli_ncodigo());
-                }
-            }
             
+            if(eplaca==null)
+            {
+                
+            }
+            else
+            {
+                if(eplaca.getM_instancia()==InstanciaEntidad.UNCHANGUE)
+                    eFactura.setPla_ncodigo(eplaca.getPla_ncodigo());
+                else if(eplaca.getM_instancia()==InstanciaEntidad.NEW)
+                    eplaca.setCli_ncodigo(ecliente.getCli_ncodigo());
+            }
         } catch (Exception e) {     }
     }
     private void GetCliente()
     {
         try {
-            if(_ecliente==null)
+            if(ecliente==null)
             {
-                _ecliente= new ECliente();
-                _ecliente.setCli_cdireccionfiscal(txtdireccioncli.getText());
-                _ecliente.setCli_cnumerodoc(txtnumerodocnuevo.getText());
-                _ecliente.setCli_crazon(txtbuscartextocliente.getText());
-                if(txtnumerodocnuevo.isVisible())
-                    _ecliente.setCli_ncodigo(0);
+                ecliente= new ECliente();
+                ecliente.setCli_cdireccionfiscal(txtdireccioncli.getText());
+                ecliente.setCli_crazon(txtBuscarClientexNombre.getText());
             }
-            
         } catch (Exception e) {
         }
     }
-    private void CambiarRegistrocliente()
-    {
-        try {
-                if(!txtnumerodocnuevo.isVisible())
-                {
-                    btnAddnuevocliente.setIcon(new javax.swing.ImageIcon("D:\\FacturaElectronica-Modificado\\FacturaElectronica-24-06-2016\\img\\limpiarclientenuevo.png"));
-                    txtdireccioncli.setEnabled(true);
-                    txtnumerodocnuevo.setVisible(true);
-                    txtnumerodocnuevo.setEnabled(true);
-                    lbnumerodocumento.setVisible(true);
-                    cmbbuscarruc.setEnabled(false);
-                    txtnumerodocnuevo.setText("");
-                    txtdireccioncli.setText("");
-                    txtbuscartextocliente.setText("");
-                }
-                else if(txtnumerodocnuevo.isVisible())
-                {
-                    btnAddnuevocliente.setIcon(new javax.swing.ImageIcon("D:\\FacturaElectronica-Modificado\\FacturaElectronica-24-06-2016\\img\\adduser.png"));
-                    txtdireccioncli.setEnabled(false);
-                    txtnumerodocnuevo.setVisible(false);
-                    txtnumerodocnuevo.setEnabled(false);
-                    lbnumerodocumento.setVisible(false);
-                    cmbbuscarruc.setEnabled(true);
-                    txtnumerodocnuevo.setText("");
-                    txtdireccioncli.setText("");
-                    txtbuscartextocliente.setText("");
-                }
-        } catch (Exception e) {
-        }
-    }
+
 }

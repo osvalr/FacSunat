@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ public class DAOVendedor implements IOperacion{
             pst.setInt(1, o);
             ResultSet _rs = _con.EjecutarQuery(pst);
             if(_rs.next())
-                 _evendedor=(new EVendedor(_rs.getInt("ven_ncodigo"),_rs.getString("ven_nombres"),_rs.getString("ven_cpaterno"),_rs.getString("ven_materno"),_rs.getString("doi_ccodigo"),_rs.getString("ven_cnumero"),_rs.getString("doc_cdescripcion"),InstancaEntidad.UNCHANGUE));
+                 _evendedor=(new EVendedor(_rs.getInt("ven_ncodigo"),_rs.getString("ven_nombres"),_rs.getString("ven_cpaterno"),_rs.getString("ven_materno"),_rs.getString("doi_ccodigo"),_rs.getString("ven_cnumero"),_rs.getString("doc_cdescripcion"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {_con.Cerrar();}
@@ -103,7 +103,7 @@ public class DAOVendedor implements IOperacion{
             pst=_con.RecibirQuer(_selectAll);
             ResultSet _rs = _con.EjecutarQuery(pst);
             while(_rs.next())
-                 _lsvendedor.add(new EVendedor(_rs.getInt("ven_ncodigo"),_rs.getString("ven_nombres"),_rs.getString("ven_cpaterno"),_rs.getString("ven_materno"),_rs.getString("doi_ccodigo"),_rs.getString("ven_cnumero"),_rs.getString("doc_cdescripcion"),InstancaEntidad.UNCHANGUE));
+                 _lsvendedor.add(new EVendedor(_rs.getInt("ven_ncodigo"),_rs.getString("ven_nombres"),_rs.getString("ven_cpaterno"),_rs.getString("ven_materno"),_rs.getString("doi_ccodigo"),_rs.getString("ven_cnumero"),_rs.getString("doc_cdescripcion"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {_con.Cerrar();}
@@ -120,7 +120,7 @@ public class DAOVendedor implements IOperacion{
             pst=_con.RecibirQuer(_selectAllVendedores);
             ResultSet _rs = _con.EjecutarQuery(pst);
             while(_rs.next())
-                 _lsvendedor.add(new EVendedor(_rs.getInt("ven_ncodigo"),_rs.getString("ven_nombres"),_rs.getString("ven_cpaterno"),_rs.getString("ven_materno"),_rs.getString("doi_ccodigo"),_rs.getString("ven_cnumero"),_rs.getString("doc_cdescripcion"),InstancaEntidad.UNCHANGUE));
+                 _lsvendedor.add(new EVendedor(_rs.getInt("ven_ncodigo"),_rs.getString("ven_nombres"),_rs.getString("ven_cpaterno"),_rs.getString("ven_materno"),_rs.getString("doi_ccodigo"),_rs.getString("ven_cnumero"),_rs.getString("doc_cdescripcion"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {_con.Cerrar();}

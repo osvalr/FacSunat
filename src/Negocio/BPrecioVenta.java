@@ -3,7 +3,7 @@ package Negocio;
 
 import AccessoDato.DAOPrecioVenta;
 import AccessoDato.EPrecioVenta;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,15 +25,15 @@ public class BPrecioVenta {
             {
                 _eprecio=x_lista.get(i);
                 _eprecio.setArt_ncodigo(x_artcodigo);
-                if(_eprecio.getM_instancia()==InstancaEntidad.NEW)
+                if(_eprecio.getM_instancia()==InstanciaEntidad.NEW)
                 {
                     _daoprecioventa.Guardar(_eprecio);
                 }
-                if(_eprecio.getM_instancia()==InstancaEntidad.MODIFY)
+                if(_eprecio.getM_instancia()==InstanciaEntidad.MODIFY)
                 {
                     _daoprecioventa.Modificar(_eprecio);
                 }
-                if(_eprecio.getM_instancia()==InstancaEntidad.DELETE)
+                if(_eprecio.getM_instancia()==InstanciaEntidad.DELETE)
                 {
                     _daoprecioventa.Eliminar(_eprecio.getPve_ncodigo());
                 }                

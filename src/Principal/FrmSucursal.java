@@ -8,7 +8,7 @@ import Negocio.BSucursal;
 import Negocio.BTablasSolas;
 import Negocio.BUbigeo;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -296,7 +296,7 @@ public class FrmSucursal extends javax.swing.JInternalFrame {
         try {
             m_Tipoinstancia=InstanciaForm.NEW;
             _esucursal = new ESucursal();
-            _esucursal.setM_instancia(InstancaEntidad.NEW);
+            _esucursal.setM_instancia(InstanciaEntidad.NEW);
             EstablecerInstancia();
         } catch (Exception e) {
         }
@@ -354,7 +354,7 @@ public class FrmSucursal extends javax.swing.JInternalFrame {
         try {
              m_Tipoinstancia=InstanciaForm.MODIFY;
              EstablecerInstancia();
-             _esucursal.setM_instancia(InstancaEntidad.MODIFY);
+             _esucursal.setM_instancia(InstanciaEntidad.MODIFY);
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnEditarActionPerformed

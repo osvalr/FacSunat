@@ -17,6 +17,10 @@ public class DAOFactura implements IOperacion{
     private final String _selecttAll="select * from vfactura ";
     private final String  _selectOnexSerieNumero="select * from vfactura where fac_cserie=? and fac_cnumero=? and rel_codigo is  null";
     private final String _updateFacura_SerieNumeroNoteCredito=" update factura set rel_codigo=?  where fac_ncodigo=?";
+    //fecha:2016-12-27
+    //autor:yasmani
+    //descripcion:select por serie, numero y tipo de documento para el proceso de anulado.
+    private final String selectxSerieNumeroTipo="select * from vfactura where fac_cserie=? and fac_cnumero=? and doc_ccodigo=?";
     private Conector _con;
     private PreparedStatement pst =null;
     @Override
@@ -56,9 +60,9 @@ public class DAOFactura implements IOperacion{
             if(_rs.next())
             {
                 _fac.setFac_ncodigo(_rs.getInt("fac_ncodigo"));
+                ((EFactura)o).setFac_ncodigo(_fac.getFac_ncodigo());
                  return true;
             }
-
         }
         catch(Exception e)
         {
@@ -235,6 +239,33 @@ public class DAOFactura implements IOperacion{
         }
         return r;
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public EFactura buscarxSerieNumeroTipo(String x_tipo,String x_serie,String x_numero)
+    {
+        EFactura _efacura=null;
+        try
+        {
+            _con= new Conector();
+            _con.Abrir();
+            pst=_con.RecibirQuer(selectxSerieNumeroTipo);
+            //pst.setString(1, x_tipo);// no tiene tipo
+            pst.setString(1, x_serie);
+            pst.setString(2, x_numero);
+            pst.setString(3, x_tipo);
+            
+            ResultSet _rs = _con.EjecutarQuery(pst);
+            if(_rs.next())
+                 _efacura=new EFactura(_rs.getInt("fac_ncodigo"),_rs.getString("fac_dfechaemision"),_rs.getString("fac_cserie"),_rs.getString("fac_cnumero"),_rs.getString("fac_tipodoc"),_rs.getString("fac_estado"),_rs.getString("fac_estadopago"),_rs.getString("mon_csimbolo"),_rs.getString("cli_crazonsocial"),_rs.getDouble("fac_subtotal"),_rs.getDouble("fac_total"),_rs.getDouble("exonerado"),_rs.getDouble("inafecto"),_rs.getString("fac_vendedor"),_rs.getInt("cli_ncodigo"),_rs.getInt("ley_ncodigo"),_rs.getString("fac_cclasepago"),_rs.getString("doc_ccodigo"),_rs.getString("mon_ncodigo"),_rs.getInt("ven_ncodigo"),_rs.getInt("suc_ncodigo"),_rs.getString("fac_cestado"),_rs.getString("fac_cdescripcion"),_rs.getDouble("fac_fiigv"));
+
+        }
+        catch(Exception e)
+        {
+            _con.Cerrar();
+            System.out.println("Erro: "+e.getMessage());
+        }
+        
+        return _efacura;
     }
     
     

@@ -3,7 +3,7 @@ package Negocio;
 
 import AccessoDato.DAODireccion;
 import AccessoDato.EDireccion;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -24,16 +24,16 @@ public class BDireccion {
             {
                 _edireccion=x_lsedireccion.get(i);
                 _edireccion.setCli_ncodigo(x_codigo);
-                if(_edireccion.getM_Instancia()==InstancaEntidad.NEW)
+                if(_edireccion.getM_Instancia()==InstanciaEntidad.NEW)
                 {
                     _estado=_daodireccion.Guardar(_edireccion);
                     //x_lsedireccion.set(i, _edireccion);
                 }
-                else if(_edireccion.getM_Instancia()==InstancaEntidad.MODIFY)
+                else if(_edireccion.getM_Instancia()==InstanciaEntidad.MODIFY)
                 {
                     _estado=_daodireccion.Modificar(_edireccion);
                 }
-                else if(_edireccion.getM_Instancia()==InstancaEntidad.DELETE)
+                else if(_edireccion.getM_Instancia()==InstanciaEntidad.DELETE)
                 {
                     _estado=_daodireccion.Eliminar(_edireccion);
                 }

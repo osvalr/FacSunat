@@ -10,7 +10,7 @@ import Negocio.BDescuentoFactura;
 import Negocio.BSucursal;
 import Negocio.BTablasSolas;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -353,14 +353,14 @@ public class FrmDescuentosGlobales extends javax.swing.JInternalFrame {
                 if(InstanciaForm.NEW==m_Tipoinstancia)
                 {
                     _edescuentocabecera= new EDescuentoCabecera();
-                    _edescuentocabecera.setM_instancia(InstancaEntidad.NEW);
+                    _edescuentocabecera.setM_instancia(InstanciaEntidad.NEW);
                     _edescuentocabecera.setCds_cnombre(txtdescuento.getText());
                     DisplayValue _valor=(DisplayValue)cmbsucursal.getSelectedItem();
                     _edescuentocabecera.setSuc_ncodigo(Integer.parseInt(_valor.getValueMenber()));
                 }
                 else if(InstanciaForm.MODIFY==m_Tipoinstancia)
                 {
-                    _edescuentocabecera.setM_instancia(InstancaEntidad.MODIFY);
+                    _edescuentocabecera.setM_instancia(InstanciaEntidad.MODIFY);
                 }
                 if(_lsdescuentofactura.isEmpty())
                 {
@@ -457,7 +457,7 @@ public class FrmDescuentosGlobales extends javax.swing.JInternalFrame {
             {
                 if(_edescuentofactura!=null)
                 {
-                    if(_edescuentofactura.getM_instancia().equals(InstancaEntidad.MODIFY))
+                    if(_edescuentofactura.getM_instancia().equals(InstanciaEntidad.MODIFY))
                     {
                         GetItem();
                         for (int i=0;i<=_lsdescuentofactura.size()-1;i++)
@@ -471,7 +471,7 @@ public class FrmDescuentosGlobales extends javax.swing.JInternalFrame {
                 else
                 {
                     _edescuentofactura= new EDescuentoFactura();
-                    _edescuentofactura.setM_instancia(InstancaEntidad.NEW);
+                    _edescuentofactura.setM_instancia(InstanciaEntidad.NEW);
                     GetItem();
                     _lsdescuentofactura.add(_edescuentofactura);
                     BindinJtable();
@@ -530,7 +530,7 @@ public class FrmDescuentosGlobales extends javax.swing.JInternalFrame {
                     if(Integer.parseInt(detalledescuento.getValueAt(indice, 0).toString())==_lsdescuentofactura.get(i).getDsa_ncodigo())
                     {
                         _edescuentofactura=_lsdescuentofactura.get(i);
-                        _edescuentofactura.setM_instancia(InstancaEntidad.MODIFY);
+                        _edescuentofactura.setM_instancia(InstanciaEntidad.MODIFY);
                     }
                 }
                 SetItem();
@@ -710,7 +710,7 @@ public class FrmDescuentosGlobales extends javax.swing.JInternalFrame {
                   _edescuentocabecera=_bcabedes.ObtenerUno(Integer.parseInt(m_Codigo));
                   if(_edescuentocabecera!=null)
                   {
-                      _edescuentocabecera.setM_instancia(InstancaEntidad.MODIFY);
+                      _edescuentocabecera.setM_instancia(InstanciaEntidad.MODIFY);
                       txtdescuento.setText(_edescuentocabecera.getCds_cnombre());
                       for(int i=0;i<=_modelosucursal.getSize()-1;i++)
                         {

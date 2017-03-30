@@ -1,8 +1,13 @@
 package Principal;
+import AccessoDato.EEmpresa;
+import AccessoDato.EResumenDiario;
+import Negocio.BEmpresa;
+import Negocio.BResumenDiario;
 import Utilidad.InstanciaForm;
+import Utilidad.ResumenDiario;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.beans.PropertyVetoException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -34,6 +39,9 @@ public class FrmPadre extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         btnnotacredito = new javax.swing.JMenuItem();
         btnnotadebito = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        mitemResumenDiario = new javax.swing.JMenuItem();
+        mitemDocBaja = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -89,7 +97,7 @@ public class FrmPadre extends javax.swing.JFrame {
             }
         });
 
-        jMenuItem1.setText("Facturar");
+        jMenuItem1.setText("Facturas  / Boletas");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -143,6 +151,26 @@ public class FrmPadre extends javax.swing.JFrame {
         jMenu2.add(btnnotadebito);
 
         menuBar.add(jMenu2);
+
+        jMenu3.setText("Otros");
+
+        mitemResumenDiario.setText("Resumen Diario");
+        mitemResumenDiario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mitemResumenDiarioActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mitemResumenDiario);
+
+        mitemDocBaja.setText("Documento de Baja");
+        mitemDocBaja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mitemDocBajaActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mitemDocBaja);
+
+        menuBar.add(jMenu3);
 
         setJMenuBar(menuBar);
 
@@ -213,23 +241,23 @@ public class FrmPadre extends javax.swing.JFrame {
     private void btnsalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalidaActionPerformed
         
     }//GEN-LAST:event_btnsalidaActionPerformed
-    FrmFactura Frmfac;
+    FrmFactura frmFactura;
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         try
         {
-            if(Frmfac==null)
+            if(frmFactura==null)
             {
-                Frmfac  =FrmFactura.getinstancia();
-                Frmfac.m_Tipoinstancia=InstanciaForm.UNCHANGUE;
-                Frmfac.m_escritorio=desktopPane;
-                Frmfac.setVisible(true);            
-                desktopPane.add(Frmfac);
-                Frmfac.setMaximum(true);
-                Frmfac.setSelected(true);
+                frmFactura  =FrmFactura.getinstancia();
+                frmFactura.m_Tipoinstancia=InstanciaForm.UNCHANGUE;
+                frmFactura.m_escritorio=desktopPane;
+                frmFactura.setVisible(true);            
+                desktopPane.add(frmFactura);
+                frmFactura.setMaximum(true);
+                frmFactura.setSelected(true);
             }
             else{
-                Frmfac.setVisible(true);
-                Frmfac.setSelected(true);
+                frmFactura.setVisible(true);
+                frmFactura.setSelected(true);
             }
         }
         catch(Exception e)
@@ -341,7 +369,6 @@ public class FrmPadre extends javax.swing.JFrame {
                         frmsucursal.setVisible(true);            
                         desktopPane.add(frmsucursal);
                         frmsucursal.setSelected(true);
-                        frmsucursal.setSelected(true);
                 }
                 else
                 {   
@@ -405,6 +432,48 @@ public class FrmPadre extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnnotadebitoActionPerformed
+    BResumenDiario bresumendiario;
+    BEmpresa bempresa;
+    private void mitemResumenDiarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mitemResumenDiarioActionPerformed
+       
+        try
+        {
+           bempresa = new BEmpresa();
+           bresumendiario= new BResumenDiario();
+            EEmpresa eempresa = bempresa.AccionObtenerDatosEmpresaDocumentoBaja();
+            List<EResumenDiario> _listaResument= bresumendiario.AccionObtenerResumenDiario();
+            if(_listaResument.size()>0)
+            {
+                ResumenDiario _xml = new ResumenDiario(eempresa, _listaResument);
+                _xml.FillXml();       
+                _xml.Envio();
+            }
+        }catch(Exception e)
+        {
+        
+        }
+    }//GEN-LAST:event_mitemResumenDiarioActionPerformed
+    FrmComunicacionBaja frmComunicacionBaja;
+    private void mitemDocBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mitemDocBajaActionPerformed
+       try {
+            if(frmComunicacionBaja==null)
+            {
+                frmComunicacionBaja  =FrmComunicacionBaja.getinstancia();
+                frmComunicacionBaja.m_Tipoinstancia=InstanciaForm.UNCHANGUE;
+                frmComunicacionBaja.m_escritorio=desktopPane;
+                frmComunicacionBaja.setVisible(true);            
+                desktopPane.add(frmComunicacionBaja);
+                frmComunicacionBaja.setMaximum(true);
+                frmComunicacionBaja.setSelected(true);
+            }
+            else{
+                frmComunicacionBaja.setVisible(true);
+                frmComunicacionBaja.setSelected(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_mitemDocBajaActionPerformed
     FrmVendedor frmvendedor;
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -450,10 +519,13 @@ public class FrmPadre extends javax.swing.JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jmArticulo;
     private javax.swing.JMenuItem jmCliente;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem mitemDocBaja;
+    private javax.swing.JMenuItem mitemResumenDiario;
     // End of variables declaration//GEN-END:variables
 
 

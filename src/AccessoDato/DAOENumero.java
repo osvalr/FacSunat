@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class DAOENumero implements IOperacion{
              pst.setInt(1, o);
              ResultSet _rs = pst.executeQuery();
              while(_rs.next())
-                _lsnumero.add(new ENumero(_rs.getInt("num_ncodigo"), _rs.getString("num_cserie"),_rs.getString("num_cnumero"),_rs.getInt("suc_ncodigo"),_rs.getString("doc_ccodigo"),_rs.getInt("par_ncodigo"),_rs.getString("doc_cdescripcion"),_rs.getString("suc_calias"),InstancaEntidad.UNCHANGUE));
+                _lsnumero.add(new ENumero(_rs.getInt("num_ncodigo"), _rs.getString("num_cserie"),_rs.getString("num_cnumero"),_rs.getInt("suc_ncodigo"),_rs.getString("doc_ccodigo"),_rs.getInt("par_ncodigo"),_rs.getString("doc_cdescripcion"),_rs.getString("suc_calias"),InstanciaEntidad.UNCHANGUE));
 
         } catch (Exception e) { e.printStackTrace();
         }
@@ -150,7 +150,7 @@ public class DAOENumero implements IOperacion{
              pst.setInt(1, x_codigo);
              ResultSet _rs = pst.executeQuery();
              if(_rs.next())
-                _lsnumero=(new ENumero(_rs.getInt("num_ncodigo"), _rs.getString("num_cserie"),_rs.getString("num_cnumero"),_rs.getInt("suc_ncodigo"),_rs.getString("doc_ccodigo"),_rs.getInt("par_ncodigo"),_rs.getString("doc_cdescripcion"),_rs.getString("suc_calias"),InstancaEntidad.UNCHANGUE));
+                _lsnumero=(new ENumero(_rs.getInt("num_ncodigo"), _rs.getString("num_cserie"),_rs.getString("num_cnumero"),_rs.getInt("suc_ncodigo"),_rs.getString("doc_ccodigo"),_rs.getInt("par_ncodigo"),_rs.getString("doc_cdescripcion"),_rs.getString("suc_calias"),InstanciaEntidad.UNCHANGUE));
 
         } catch (Exception e) { e.printStackTrace();
         _con.Cerrar();

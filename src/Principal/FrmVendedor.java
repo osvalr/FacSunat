@@ -9,7 +9,7 @@ import Negocio.BTablasSolas;
 import Negocio.BVendedor;
 import Principal.FrmBuscar;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -266,7 +266,7 @@ public class FrmVendedor extends javax.swing.JInternalFrame {
         {
             m_Tipoinstancia= InstanciaForm.NEW;
             _evendedor=new EVendedor();
-            _evendedor.setM_instanciaentidad(InstancaEntidad.NEW);
+            _evendedor.setM_instanciaentidad(InstanciaEntidad.NEW);
             ClearForm();
             EstablecerInstancia();
         }
@@ -442,7 +442,7 @@ public class FrmVendedor extends javax.swing.JInternalFrame {
         {
             m_Tipoinstancia=InstanciaForm.MODIFY;
             EstablecerInstancia();
-            _evendedor.setM_instanciaentidad(InstancaEntidad.MODIFY);
+            _evendedor.setM_instanciaentidad(InstanciaEntidad.MODIFY);
         }
         catch(Exception e)
         {JOptionPane.showMessageDialog(null, "Error :"+e.getMessage(), "Mensaje",JOptionPane.WARNING_MESSAGE);}
@@ -462,7 +462,7 @@ public class FrmVendedor extends javax.swing.JInternalFrame {
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
             _bdocumento = new BDocumentoIdentidad();
-            _lsdocumento=_bdocumento.AccionTraerTodo();
+            _lsdocumento=_bdocumento.AccionTraerTodo("");//cuando se le envia vacio obtine todos los tipos de documentos
             cmbdocumento.removeAllItems();
             item= new Vector();
             item.addElement(new DisplayValue("Seleccione", "-1"));

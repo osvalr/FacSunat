@@ -14,7 +14,7 @@ import Negocio.BUnidad;
 import Utilidad.ComboPersonalizado;
 import Utilidad.DisplayValue;
 import Utilidad.EditorCelda;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.OtrasEntidad;
 import java.awt.event.ActionEvent;
@@ -528,7 +528,7 @@ public class FrmArticulo extends javax.swing.JInternalFrame {
                         _eprecio=_lseprecio.get(i);
                         if(_eprecio.getPve_ncodigo() ==Integer.parseInt(_codigo))
                         {
-                            _eprecio.setM_instancia(InstancaEntidad.DELETE);
+                            _eprecio.setM_instancia(InstanciaEntidad.DELETE);
                             _lseprecio.set(i, _eprecio);
                         }
                     }
@@ -836,7 +836,7 @@ public void EstablecerInstancia()
              if(instancia.equals("NEW"))
              {
                 _eprecio = new EPrecioVenta();
-                _eprecio.setM_instancia(InstancaEntidad.NEW);
+                _eprecio.setM_instancia(InstanciaEntidad.NEW);
                 _eprecio.setPve_ctipoprecio(listaprecio);
                 _eprecio.setPve_cmoneda(moneda);
                 _eprecio.setUni_ccodigo(codigounidad);
@@ -857,7 +857,7 @@ public void EstablecerInstancia()
                    if(_lseprecio.get(i).getPve_ncodigo() ==Integer.parseInt(codigo))
                    {
                         _eprecio = _lseprecio.get(i);
-                        _eprecio.setM_instancia(InstancaEntidad.MODIFY);
+                        _eprecio.setM_instancia(InstanciaEntidad.MODIFY);
                         _eprecio.setPve_ctipoprecio(listaprecio);
                         _eprecio.setPve_cmoneda(moneda);
                         _eprecio.setUni_ccodigo(codigounidad);

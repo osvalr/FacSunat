@@ -6,7 +6,7 @@ import AccessoDato.DAOPrecioVenta;
 import AccessoDato.EArticulo;
 import AccessoDato.EPrecioVenta;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +37,15 @@ public class BArticulo {
                 {
                     _eprecio=x_lista.get(i);
                     _eprecio.setArt_ncodigo(x_ar.getArt_ncodigo());
-                    if(_eprecio.getM_instancia()==InstancaEntidad.NEW)
+                    if(_eprecio.getM_instancia()==InstanciaEntidad.NEW)
                     {
                         _flag=_daoprecioventa.Guardar(_eprecio);
                     }
-                    if(_eprecio.getM_instancia()==InstancaEntidad.MODIFY)
+                    if(_eprecio.getM_instancia()==InstanciaEntidad.MODIFY)
                     {
                         _flag=_daoprecioventa.Modificar(_eprecio);
                     }
-                    if(_eprecio.getM_instancia()==InstancaEntidad.DELETE)
+                    if(_eprecio.getM_instancia()==InstanciaEntidad.DELETE)
                     {
                         _flag=_daoprecioventa.Eliminar(_eprecio.getPve_ncodigo());
                     }               
@@ -86,15 +86,15 @@ public class BArticulo {
                 {
                     _eprecio=x_lista.get(i);
                     _eprecio.setArt_ncodigo(x_ar.getArt_ncodigo());
-                    if(_eprecio.getM_instancia()==InstancaEntidad.NEW)
+                    if(_eprecio.getM_instancia()==InstanciaEntidad.NEW)
                     {
                         _flag=_daoprecioventa.Guardar(_eprecio);
                     }
-                    if(_eprecio.getM_instancia()==InstancaEntidad.MODIFY)
+                    if(_eprecio.getM_instancia()==InstanciaEntidad.MODIFY)
                     {
                         _flag=_daoprecioventa.Modificar(_eprecio);
                     }
-                    if(_eprecio.getM_instancia()==InstancaEntidad.DELETE)
+                    if(_eprecio.getM_instancia()==InstanciaEntidad.DELETE)
                     {
                         _flag=_daoprecioventa.Eliminar(_eprecio.getPve_ncodigo());
                     }               

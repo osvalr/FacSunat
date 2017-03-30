@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -139,7 +139,7 @@ public class DAOPrecioVenta {
             pst.setInt(1, x_codigo);
             ResultSet _rs = _con.EjecutarQuery(pst);
             while(_rs.next())
-                 _lseprecio.add(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstancaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString(_insertOne)));
+                 _lseprecio.add(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstanciaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString(_insertOne)));
         }
         catch(Exception e)
         {}
@@ -156,7 +156,7 @@ public class DAOPrecioVenta {
             pst=_con.RecibirQuer(_selectAllDetalle);
             ResultSet _rs = _con.EjecutarQuery(pst);
             while(_rs.next())
-                  _lseprecio.add(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstancaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString("art_ccodigo")));
+                  _lseprecio.add(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstanciaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString("art_ccodigo")));
         }
         catch(Exception e)
         { _con.Cerrar();}
@@ -176,7 +176,7 @@ public class DAOPrecioVenta {
             pst.setInt(1, x_codigo);
             ResultSet _rs = _con.EjecutarQuery(pst);
             if(_rs.next())
-                  _eprecio=(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstancaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString("art_ccodigo")));
+                  _eprecio=(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstanciaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString("art_ccodigo")));
         }
         catch(Exception e)
         {}
@@ -201,7 +201,7 @@ public class DAOPrecioVenta {
             pst.setString(1, x_caracter+"%");
             ResultSet _rs = _con.EjecutarQuery(pst);
             while(_rs.next())
-               _lseprecio.add(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstancaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString("art_ccodigo")));
+               _lseprecio.add(new EPrecioVenta(_rs.getInt("pve_ncodigo"),_rs.getInt("art_ncodigo"),_rs.getFloat("Pve_fpreciounitario"),_rs.getFloat("pve_fprecioventa"),_rs.getFloat("pve_figv"),_rs.getString("pve_ctipoprecio"),InstanciaEntidad.UNCHANGUE,_rs.getInt("uni_ncodigo"),_rs.getString("pve_cmoneda"),_rs.getString("pve_ccodbarra"),_rs.getString("uni_cdescripcion"),_rs.getInt("pve_ncantidad"),_rs.getInt("pve_nporcentaje"),_rs.getString("pve_ctipoafectacion"),_rs.getString("art_cafectacion"),_rs.getString("afedescripcion"),_rs.getString("art_cdescripcion"),_rs.getString("art_ccodigo")));
         }
         catch(Exception e)
         { _con.Cerrar();}

@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public class DAODetFactura implements IOperacion{
             pst.setInt(1, x_codigo);
             ResultSet _rs = _con.EjecutarQuery(pst);
             while(_rs.next())
-                  _lsdetalle.add(new  EFacturaDetalle(_rs.getInt("dfa_ncodigo"),_rs.getInt("fac_ncodigo"), _rs.getInt("art_ncodigo"),_rs.getInt("dfa_ccantidad") ,_rs.getDouble("dfa_fvalorunitario"),_rs.getDouble("dfa_fvalortotal") ,_rs.getDouble("dfa_fvaloritemigv"),_rs.getDouble("dfa_foexonerada"),_rs.getDouble("dfa_fogravada"),_rs.getDouble("dfa_foinafecta") ,_rs.getString("art_cafectacion") ,_rs.getDouble("dfa_fdescuento") ,_rs.getDouble("dfa_fvalorsubtotal"),_rs.getDouble("dfa_fvalorventa"),_rs.getInt("pve_ctipoafectacion"),_rs.getString("art_cdescripcion"),_rs.getString("categoria"),_rs.getString("afe_cdescripcion"),_rs.getInt("uni_ncodigo"),_rs.getString("uni_cdescripcion"),InstancaEntidad.UNCHANGUE));
+                  _lsdetalle.add(new  EFacturaDetalle(_rs.getInt("dfa_ncodigo"),_rs.getInt("fac_ncodigo"), _rs.getInt("art_ncodigo"),_rs.getInt("dfa_ccantidad") ,_rs.getDouble("dfa_fvalorunitario"),_rs.getDouble("dfa_fvalortotal") ,_rs.getDouble("dfa_fvaloritemigv"),_rs.getDouble("dfa_foexonerada"),_rs.getDouble("dfa_fogravada"),_rs.getDouble("dfa_foinafecta") ,_rs.getString("art_cafectacion") ,_rs.getDouble("dfa_fdescuento") ,_rs.getDouble("dfa_fvalorsubtotal"),_rs.getDouble("dfa_fvalorventa"),_rs.getInt("pve_ctipoafectacion"),_rs.getString("art_cdescripcion"),_rs.getString("categoria"),_rs.getString("afe_cdescripcion"),_rs.getInt("uni_ncodigo"),_rs.getString("uni_cdescripcion"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {

@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class DAODescuentoFactura implements IOperacion{
             pst.setInt(1, x_codsucursal);
             ResultSet _rs = pst.executeQuery();
             while(_rs.next())
-                _lsdescuento.add(new EDescuentoFactura(_rs.getInt("dsa_ncodigo"),_rs.getDouble("dsa_fporcentaje"),_rs.getDouble("dsa_flimite"),_rs.getString("doc_ncodigo"),_rs.getInt("cds_ncodigo"),_rs.getString("doc_cdescripcion"),InstancaEntidad.UNCHANGUE));
+                _lsdescuento.add(new EDescuentoFactura(_rs.getInt("dsa_ncodigo"),_rs.getDouble("dsa_fporcentaje"),_rs.getDouble("dsa_flimite"),_rs.getString("doc_ncodigo"),_rs.getInt("cds_ncodigo"),_rs.getString("doc_cdescripcion"),InstanciaEntidad.UNCHANGUE));
 
         }catch(Exception e)
         {}

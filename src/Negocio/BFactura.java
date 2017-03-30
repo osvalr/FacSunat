@@ -11,7 +11,7 @@ import AccessoDato.EFactura;
 import AccessoDato.EFacturaDetalle;
 import AccessoDato.EPlaca;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,15 +53,15 @@ public class BFactura {
                     _efacturadet=x_detalle.get(i);
                     _efacturadet.setFac_ncodigo(entidad.getFac_ncodigo());
 
-                    if(_efacturadet.getM_instancia()==InstancaEntidad.NEW)
+                    if(_efacturadet.getM_instancia()==InstanciaEntidad.NEW)
                     {
                         _flag=_daodetalle.Guardar(_efacturadet);
                     }
-                    if(_efacturadet.getM_instancia()==InstancaEntidad.MODIFY)
+                    if(_efacturadet.getM_instancia()==InstanciaEntidad.MODIFY)
                     {
                         _flag=_daodetalle.Modificar(_efacturadet);
                     }
-                    if(_efacturadet.getM_instancia()==InstancaEntidad.DELETE)
+                    if(_efacturadet.getM_instancia()==InstanciaEntidad.DELETE)
                     {
                          _flag=_daodetalle.Modificar(_efacturadet);
                     }                                
@@ -116,21 +116,19 @@ public class BFactura {
             _bcliente = new BCliente();
             _bcliente.setCrearinstaciadao(false);
             _bcliente.setCon(_con);
-            if(x_cliente.getCli_ncodigo()==0)
+
+            if(x_cliente.getCli_ncodigo()!=0)
             {
-                if(_bcliente.AcccionGuardar_Factura(x_cliente, x_direccion))//-------------------------------------------Guardanis clientes nuevos desde factura
-                {
-                    if(x_placa!=null)
-                    {
-                        _bplaca = new BPlaca();
-                        _bplaca.setCon(_con);
-                        EPlaca _eplaca;
-                        _eplaca=x_placa;
-                        _eplaca.setCli_ncodigo(x_cliente.getCli_ncodigo());
-                        if(_bplaca.AccionGuardarxFactura(x_placa))
+
+                if(x_placa!=null)
+                {       if(x_placa.getM_instancia()==(InstanciaEntidad.NEW))
                         {
-                                entidad.setCli_ncodigo(x_cliente.getCli_ncodigo());
-                                entidad.setPla_ncodigo(x_placa.getPla_ncodigo());
+                                _bplaca = new BPlaca();
+                                _bplaca.setCon(_con);
+                                if(_bplaca.AccionGuardarDesdeFactura(x_placa))
+                                {
+                                    entidad.setPla_ncodigo(x_placa.getPla_ncodigo());
+                                }
                                 _daofac.setCon(_con);
                                 if(_daofac.Guardar(entidad))
                                 {
@@ -145,15 +143,15 @@ public class BFactura {
                                                     _efacturadet=x_detalle.get(i);
                                                     _efacturadet.setFac_ncodigo(entidad.getFac_ncodigo());
 
-                                                    if(_efacturadet.getM_instancia()==InstancaEntidad.NEW)
+                                                    if(_efacturadet.getM_instancia()==InstanciaEntidad.NEW)
                                                     {
                                                         _flag=_daodetalle.Guardar(_efacturadet);
                                                     }
-                                                    if(_efacturadet.getM_instancia()==InstancaEntidad.MODIFY)
+                                                    if(_efacturadet.getM_instancia()==InstanciaEntidad.MODIFY)
                                                     {
                                                         _flag=_daodetalle.Modificar(_efacturadet);
                                                     }
-                                                    if(_efacturadet.getM_instancia()==InstancaEntidad.DELETE)
+                                                    if(_efacturadet.getM_instancia()==InstanciaEntidad.DELETE)
                                                     {
                                                          _flag=_daodetalle.Modificar(_efacturadet);
                                                     }                                
@@ -161,24 +159,23 @@ public class BFactura {
                                                         break;
                                                 }
                                         }
+                                }
+                                else
+                                {
+                                    _con.con.rollback();
+                                    return false;
+                                }        
                             }
                             else
                             {
                                 _con.con.rollback();
                                 return false;
-                            }        
-                        }
-                        else
-                        {
-                            _con.con.rollback();
-                            return false;
-                        }
-                    
-                    }else
-                    {
-                        entidad.setCli_ncodigo(x_cliente.getCli_ncodigo());
-                        _daofac.setCon(_con);
-                        if(_daofac.Guardar(entidad))
+                            }
+                        
+                        
+                }else {
+                                _daofac.setCon(_con);
+                                if(_daofac.Guardar(entidad))
                                 {
                                         _daonumero= new DAOENumero();
                                         if(_daonumero.IncrementarNumero(Integer.parseInt(entidad.getFac_cnumero()),x_num_ncodigo))
@@ -191,15 +188,15 @@ public class BFactura {
                                                     _efacturadet=x_detalle.get(i);
                                                     _efacturadet.setFac_ncodigo(entidad.getFac_ncodigo());
 
-                                                    if(_efacturadet.getM_instancia()==InstancaEntidad.NEW)
+                                                    if(_efacturadet.getM_instancia()==InstanciaEntidad.NEW)
                                                     {
                                                         _flag=_daodetalle.Guardar(_efacturadet);
                                                     }
-                                                    if(_efacturadet.getM_instancia()==InstancaEntidad.MODIFY)
+                                                    if(_efacturadet.getM_instancia()==InstanciaEntidad.MODIFY)
                                                     {
                                                         _flag=_daodetalle.Modificar(_efacturadet);
                                                     }
-                                                    if(_efacturadet.getM_instancia()==InstancaEntidad.DELETE)
+                                                    if(_efacturadet.getM_instancia()==InstanciaEntidad.DELETE)
                                                     {
                                                          _flag=_daodetalle.Modificar(_efacturadet);
                                                     }                                
@@ -213,18 +210,9 @@ public class BFactura {
                                 _con.con.rollback();
                                 return false;
                             }
-                    }
                 }
-                else
-                {
-                    _con.con.rollback();
-                    return false;
-                }
-            }
-            else if(x_cliente.getCli_ncodigo()!=0)
-            {
+                        }
             
-            }
             //------------------------------------------------------------------------RolBack or comit 
             if(_flag)
                 _con.con.commit();
@@ -270,7 +258,10 @@ public class BFactura {
     public void setCon(Conector _con) {
         this._con = _con;
     }
-    
+    public EFactura AccionBuscarxSerieNumeroTipo(String x_tipo,String x_serie,String x_numero)
+    {
+        return _daofac.buscarxSerieNumeroTipo(x_tipo, x_serie, x_numero);
+    }
     
     
 }

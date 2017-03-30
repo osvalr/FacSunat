@@ -6,7 +6,7 @@ import AccessoDato.DAODescuentoFactura;
 import AccessoDato.EDescuentoCabecera;
 import AccessoDato.EDescuentoFactura;
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class BDescuentoCabecera {
             _con.Abrir();
             _con.con.setAutoCommit(false);
             _daocabecerades.setCon(_con);
-            if(_ecabedes.getM_instancia()==InstancaEntidad.NEW)
+            if(_ecabedes.getM_instancia()==InstanciaEntidad.NEW)
             {
                 if(_daocabecerades.Guardar(_ecabedes))
                 {
@@ -37,11 +37,11 @@ public class BDescuentoCabecera {
                     {
                         EDescuentoFactura _edescuento=_lsdescuento.get(i);
                         _edescuento.setCds_ncodigo(_ecabedes.getCds_ncodigo());
-                        if(_edescuento.getM_instancia()==InstancaEntidad.NEW)
+                        if(_edescuento.getM_instancia()==InstanciaEntidad.NEW)
                         {
                             _rpta=_daodescuentofactura.Guardar(_edescuento);
                         }
-                        if(_edescuento.getM_instancia()==InstancaEntidad.MODIFY)
+                        if(_edescuento.getM_instancia()==InstanciaEntidad.MODIFY)
                         {
                              _rpta=_daodescuentofactura.Modificar(_edescuento);
                         }
@@ -50,7 +50,7 @@ public class BDescuentoCabecera {
                     }
                 }
             }
-            else if(_ecabedes.getM_instancia()==InstancaEntidad.MODIFY)
+            else if(_ecabedes.getM_instancia()==InstanciaEntidad.MODIFY)
             {
                 if(_daocabecerades.Modificar(_ecabedes))
                 {
@@ -60,11 +60,11 @@ public class BDescuentoCabecera {
                     {
                         EDescuentoFactura _edescuento=_lsdescuento.get(i);
                         _edescuento.setCds_ncodigo(_ecabedes.getCds_ncodigo());
-                        if(_edescuento.getM_instancia()==InstancaEntidad.NEW)
+                        if(_edescuento.getM_instancia()==InstanciaEntidad.NEW)
                         {
                             _rpta=_daodescuentofactura.Guardar(_edescuento);
                         }
-                        if(_edescuento.getM_instancia()==InstancaEntidad.MODIFY)
+                        if(_edescuento.getM_instancia()==InstanciaEntidad.MODIFY)
                         {
                              _rpta=_daodescuentofactura.Modificar(_edescuento);
                         }

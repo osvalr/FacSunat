@@ -3,7 +3,7 @@ package Negocio;
 
 import AccessoDato.DAOSucursal;
 import AccessoDato.ESucursal;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +46,9 @@ public class BSucursal {
         boolean _rpta=false;
         try {
             
-            if(x_sucursal.getM_instancia()==InstancaEntidad.NEW)
+            if(x_sucursal.getM_instancia()==InstanciaEntidad.NEW)
                 _rpta=_daosucursal.Guardar(x_sucursal);
-            if(x_sucursal.getM_instancia()==InstancaEntidad.MODIFY)
+            if(x_sucursal.getM_instancia()==InstanciaEntidad.MODIFY)
                 _rpta=_daosucursal.Modificar(x_sucursal);
         } catch (Exception e) {
         }

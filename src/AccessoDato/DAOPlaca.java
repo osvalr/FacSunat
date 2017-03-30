@@ -3,7 +3,7 @@ package AccessoDato;
 
 import Utilidad.Conector;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ public class DAOPlaca implements IOperacion{
     private final String  _updateOne="";
     private final String  _selectAll="select  * from placa where cli_ncodigo=?";  
     private final String _selectOnexCliente="select  * from placa where pla_ncodigo=? and cli_ncodigo=?";
-    private final String _selectAllplacaxCodigoClienteMantenimiento="select  * from placa where cli_ncodigo=?";
-    private final String _selectonePlacaxIdMantenimiento="select  * from placa where pla_ncodigo=?";
+    private final String _selectOnePlacaxIdCliente="select  * from placa where cli_ncodigo=?";
+    private final String _selectOnePlacaxIdPlaca="select  * from placa where pla_ncodigo=?";
 
     private Conector _con;
     private PreparedStatement pst =null;
@@ -54,20 +54,21 @@ public class DAOPlaca implements IOperacion{
 
     @Override
     public Object ObtenerUno(int o) {
-         EPlaca _eplaca=null;
-         try {
-            _con= new Conector();
-            _con.Abrir();
-            pst=_con.RecibirQuer(_selectOnexCliente);
-            pst.setInt(1, o);
-            pst.setInt(2, cli_ncodigo);
-            ResultSet _rs = _con.EjecutarQuery(pst);  
-            if(_rs.next())
-              _eplaca=(new EPlaca(_rs.getInt("pla_ncodigo"), _rs.getString("pla_cnombre"),InstancaEntidad.UNCHANGUE));
-        } catch (Exception e) { _con.Cerrar();  }
-         finally{_con.Cerrar();}
-         
-         return _eplaca;
+//         EPlaca _eplaca=null;
+//         try {
+//            _con= new Conector();
+//            _con.Abrir();
+//            pst=_con.RecibirQuer(_selectOnexCliente);
+//            pst.setInt(1, o);
+//            pst.setInt(2, cli_ncodigo);
+//            ResultSet _rs = _con.EjecutarQuery(pst);  
+//            if(_rs.next())
+//              _eplaca=(new EPlaca(_rs.getInt("pla_ncodigo"), _rs.getString("pla_cnombre"),InstanciaEntidad.UNCHANGUE));
+//        } catch (Exception e) { _con.Cerrar();  }
+//         finally{_con.Cerrar();}
+//         
+//         return _eplaca;
+throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     @Override
     public List<EPlaca> ObtenerTodos() {
@@ -130,7 +131,23 @@ public class DAOPlaca implements IOperacion{
         
         return _modelo;
     }
-
+    public List<DisplayValue> FiltrarxCliente(int x_codigo)
+    {
+        List<DisplayValue> listaDisplay = new ArrayList<>();
+        _con= new Conector();
+        try {
+            _con.Abrir();
+            pst=_con.RecibirQuer(_selectAll);
+            pst.setInt(1, x_codigo);
+            
+            ResultSet _rs = _con.EjecutarQuery(pst);            
+            while(_rs.next())
+              listaDisplay.add(new DisplayValue(_rs.getString("pla_cnombre"),_rs.getInt("pla_ncodigo")));
+            
+        } catch (Exception e) {_con.Cerrar();}finally{_con.Cerrar();}
+        
+       return listaDisplay;
+    }
     public int getCli_ncodigo() {
         return cli_ncodigo;
     }
@@ -139,17 +156,17 @@ public class DAOPlaca implements IOperacion{
         this.cli_ncodigo = cli_ncodigo;
     }
     
-    public List<EPlaca> ObtenerTodosPlacasdeClienteMantenimiento(int x_codigo) {
+    public List<EPlaca> ObtenerListaPlacaxIdCliente(int x_codigo) {
         List<EPlaca> _eplaca=new ArrayList<>();
          try {
          
              _con= new Conector();
             _con.Abrir();
-            pst=_con.RecibirQuer(_selectAllplacaxCodigoClienteMantenimiento);
+            pst=_con.RecibirQuer(_selectOnePlacaxIdCliente);
             pst.setInt(1, x_codigo);
             ResultSet _rs = _con.EjecutarQuery(pst);            
             while(_rs.next())
-              _eplaca.add(new EPlaca(_rs.getInt("pla_ncodigo"), _rs.getString("pla_cnombre"),InstancaEntidad.UNCHANGUE));
+              _eplaca.add(new EPlaca(_rs.getInt("pla_ncodigo"), _rs.getString("pla_cnombre"),InstanciaEntidad.UNCHANGUE));
         } catch (Exception e) { _con.Cerrar();  }
          finally{_con.Cerrar();}
          
@@ -162,11 +179,11 @@ public class DAOPlaca implements IOperacion{
          try {
             _con= new Conector();
             _con.Abrir();
-            pst=_con.RecibirQuer(_selectonePlacaxIdMantenimiento);
+            pst=_con.RecibirQuer(_selectOnePlacaxIdPlaca);
             pst.setInt(1, x_codigo);
             ResultSet _rs = _con.EjecutarQuery(pst);            
             while(_rs.next())
-              _eplaca=(new EPlaca(_rs.getInt("pla_ncodigo"), _rs.getString("pla_cnombre"),InstancaEntidad.UNCHANGUE));
+              _eplaca=(new EPlaca(_rs.getInt("pla_ncodigo"), _rs.getString("pla_cnombre"),InstanciaEntidad.UNCHANGUE));
         } catch (Exception e) { _con.Cerrar();  }
          finally{_con.Cerrar();}
          

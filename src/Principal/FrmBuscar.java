@@ -1149,21 +1149,17 @@ public class FrmBuscar extends javax.swing.JInternalFrame {
                             JButton.class // <- noten que aquí se especifica que la última columna es un botón
                         };
                         modelo = new DefaultTableModel(){
-                        Class[] tipos = tiposColumnas;
-                        // boolean[] canEdit = new boolean[]{false,false,false,false,false,false,true};
-                        @Override public boolean isCellEditable(int rowIndex,int columnIndex)
-                        {  
-                            return !(this.getColumnClass(columnIndex).equals(JButton.class));
-                            //return canEdit[columnIndex];
-                        }
-                        
-                        @Override
+                            Class[] tipos = tiposColumnas;
+                            boolean[] canEdit = new boolean[]{
+                            false,false,false,true,true,false};
+                            @Override public boolean isCellEditable(int rowIndex,int columnIndex)
+                            {  return canEdit[columnIndex];}
+                            @Override
                         public Class getColumnClass(int columnIndex) {
                             // Este método es invocado por el CellRenderer para saber que dibujar en la celda,
                             // observen que estamos retornando la clase que definimos de antemano.
                             return tipos[columnIndex];
                         }
-                        
                         };
                         columname = new Object[7];
                         columname[0]="Codigo";
@@ -1231,7 +1227,7 @@ public class FrmBuscar extends javax.swing.JInternalFrame {
                                     if(!_codigo.equals(""))
                                     {
                                         BPlaca _bplaca =new BPlaca();
-                                        List<EPlaca> _lsplaca=_bplaca.AccionObtenerTodoxCodigoCliente_ClienteMantenimeinto(Integer.parseInt(_codigo));
+                                        List<EPlaca> _lsplaca=_bplaca.AccionObtenerListaPlacaxIdCliente(Integer.parseInt(_codigo));
 
                                         if(_lsplaca.size()>0)
                                         {

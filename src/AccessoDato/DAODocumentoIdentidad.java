@@ -13,7 +13,7 @@ public class DAODocumentoIdentidad implements IOperacion{
     private final String  _selectAll="select  * from documentoidentidad";    
     private Conector _con;
     private PreparedStatement pst =null;
-    public List<EDocumentoIdentidad> ObtenerTodo()
+    public List<EDocumentoIdentidad> ObtenerTodo(String x_tipoSelect)
     {
         List<EDocumentoIdentidad> lsidentidad=new ArrayList<>();
         try
@@ -22,8 +22,20 @@ public class DAODocumentoIdentidad implements IOperacion{
             _con.Abrir();
             pst=_con.RecibirQuer(_selectAll);
             ResultSet _rs = pst.executeQuery();
+             
             while(_rs.next())
-                lsidentidad.add(new EDocumentoIdentidad(_rs.getString("doi_ccodigo"), _rs.getString("doc_cdescripcion")));
+            {
+                if(x_tipoSelect.length()>0)
+                {
+                    if(x_tipoSelect.equals(_rs.getString("doi_ccodigo")))
+                        lsidentidad.add(new EDocumentoIdentidad(_rs.getString("doi_ccodigo"), _rs.getString("doc_cdescripcion")));
+   
+                }
+                else   
+                {
+                     lsidentidad.add(new EDocumentoIdentidad(_rs.getString("doi_ccodigo"), _rs.getString("doc_cdescripcion")));
+                }
+            }
         }
         catch(Exception e)
         {_con.Cerrar();

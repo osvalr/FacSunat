@@ -3,7 +3,7 @@ package Principal;
 
 import AccessoDato.EPlaca;
 import Negocio.BPlaca;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -249,7 +249,7 @@ public class FrmPlaca extends javax.swing.JInternalFrame {
                                 _eplaca=_lsplaca.get(i);
                                 if(_eplaca.getPla_ncodigo()==Integer.parseInt(_codigo))
                                 {
-                                    _eplaca.setM_instancia(InstancaEntidad.DELETE);
+                                    _eplaca.setM_instancia(InstanciaEntidad.DELETE);
                                     _lsplaca.set(i, _eplaca);
                                 }
                             }
@@ -278,19 +278,19 @@ public class FrmPlaca extends javax.swing.JInternalFrame {
                     frmaddplaca = FrmAddPlaca.getinstancia(this);
                     int _codigo=0;
                     String instancia= detalleplaca.getValueAt(_filaselecionada, 2).toString();
-                    if(instancia.equals(""+InstancaEntidad.UNCHANGUE)||instancia.equals(""+InstancaEntidad.MODIFY) )
+                    if(instancia.equals(""+InstanciaEntidad.UNCHANGUE)||instancia.equals(""+InstanciaEntidad.MODIFY) )
                     {
                         _codigo= Integer.parseInt(detalleplaca.getValueAt(_filaselecionada, 0).toString());
-                        _eplaca=_bplaca.AcctionObtenerUnaPlacaMantenimiento(_codigo);
+                        _eplaca=_bplaca.AcctionObtenerUnaPlacaxId(_codigo);
                     }
                     else
                     {
                         _eplaca=new EPlaca();
                         _eplaca.setPla_cnombre(detalleplaca.getValueAt(_filaselecionada, 1).toString());
-                        _eplaca.setM_instancia(InstancaEntidad.NEW);
+                        _eplaca.setM_instancia(InstanciaEntidad.NEW);
                         posicion=_filaselecionada;
                     }
-                    frmaddplaca.m_Tipoinstancia=instancia.equals(""+InstancaEntidad.NEW)?InstanciaForm.NEW:InstanciaForm.MODIFY;
+                    frmaddplaca.m_Tipoinstancia=instancia.equals(""+InstanciaEntidad.NEW)?InstanciaForm.NEW:InstanciaForm.MODIFY;
                     frmaddplaca.panelPrincila =panelPrincila;
                     desktopSize = panelPrincila.getSize();
                     Internal = frmaddplaca.getSize();
@@ -407,7 +407,7 @@ public class FrmPlaca extends javax.swing.JInternalFrame {
     {
         try {
             
-             if(_eplaca.getM_instancia()==InstancaEntidad.NEW)
+             if(_eplaca.getM_instancia()==InstanciaEntidad.NEW)
              {
                  if(posicion!=-1)
                  {
@@ -416,7 +416,7 @@ public class FrmPlaca extends javax.swing.JInternalFrame {
                  }
                  else
                      _lsplaca.add(_eplaca);
-             }else if(_eplaca.getM_instancia()==InstancaEntidad.MODIFY)
+             }else if(_eplaca.getM_instancia()==InstanciaEntidad.MODIFY)
              {
                  for(int i=0;i<=_lsplaca.size()-1;i++)
                  {
@@ -481,7 +481,7 @@ public class FrmPlaca extends javax.swing.JInternalFrame {
     public void CargarDatos()
     {
         _bplaca = new BPlaca();
-        _lsplaca=_bplaca.AccionObtenerTodoxCodigoCliente_ClienteMantenimeinto(Integer.parseInt(m_Codigo));            
+        _lsplaca=_bplaca.AccionObtenerListaPlacaxIdCliente(Integer.parseInt(m_Codigo));            
         SetPlacas();
     }
 

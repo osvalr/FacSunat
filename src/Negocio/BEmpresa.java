@@ -25,5 +25,10 @@ public class BEmpresa {
         return _empresa;
     }
     
+    public EEmpresa AccionObtenerDatosEmpresaDocumentoBaja()
+    {
+        return _daoempresa.ObtenerDatosResumen();
+    }
+    
             
 }

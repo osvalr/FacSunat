@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
-    <system systemId="https://www.sunat.gob.pe/ol-ti-itcpgem-beta/billService?wsdl" uri="wsdl/www.sunat.gob.pe/ol-ti-itcpgem-beta/billService.wsdl"/>
-    <system systemId="https://www.sunat.gob.pe:443/ol-ti-itcpgem-beta/billService?wsdl=1" uri="wsdl/www.sunat.gob.pe_443/ol-ti-itcpgem-beta/billService.wsdl_1.wsdl"/>
-    <system systemId="https://www.sunat.gob.pe:443/ol-ti-itcpgem-beta/billService?xsd=1" uri="wsdl/www.sunat.gob.pe_443/ol-ti-itcpgem-beta/billService.xsd_1.xsd"/>
-    <system systemId="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?wsdl" uri="wsdl/e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.wsdl"/>
-    <system systemId="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService?ns1.wsdl" uri="wsdl/e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.ns1.wsdl"/>
-    <system systemId="https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.xsd2.xsd" uri="wsdl/e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService.xsd2.xsd"/>
-</catalog>

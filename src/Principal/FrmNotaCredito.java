@@ -20,7 +20,7 @@ import Negocio.BRelacionadoDocumento;
 import Negocio.BTablasSolas;
 import Utilidad.DisplayValue;
 import Utilidad.Formato;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -512,7 +512,7 @@ public class FrmNotaCredito extends javax.swing.JInternalFrame {
                 _nota.setErelaciondoc(_erelaciondocu);
                 _nota.setLsrelaciondoc(_lsrelaciondocumento);
                 _nota.setLsdetfactura(_lsefacturadetalle);
-                if(_nota.FillXml())
+               if(_nota.FillXml())
                 {
                             if(!_nota.Envio())
                                 JOptionPane.showMessageDialog(null, "ResponseCode :"+_nota.errResponseCode+ " Detalle :" +_nota.errDescription, "Respuesta Sunat.",JOptionPane.WARNING_MESSAGE);
@@ -940,7 +940,7 @@ public class FrmNotaCredito extends javax.swing.JInternalFrame {
                 if(_efeactura!=null)
                 {
                     _erelaciondocu = new ERelacionadoDocumento();
-                    _erelaciondocu.setM_instancia(InstancaEntidad.NEW);
+                    _erelaciondocu.setM_instancia(InstanciaEntidad.NEW);
                     DisplayValue _valor=(DisplayValue)cmbdocumento.getSelectedItem();
                     _erelaciondocu.setDoc_ccodigo(_valor.getValueMenber());
                     _valor=(DisplayValue)cmbtiponota.getSelectedItem();
@@ -964,10 +964,10 @@ public class FrmNotaCredito extends javax.swing.JInternalFrame {
                     //_erelaciondocu.setRel_cdescripcion(m_Codigo);
                     for(int i=0;i<=_lsefacturadetalle.size()-1;i++)
                     {
-                        if(_lsefacturadetalle.get(i).getM_instancia()==InstancaEntidad.UNCHANGUE)
+                        if(_lsefacturadetalle.get(i).getM_instancia()==InstanciaEntidad.UNCHANGUE)
                         {
                             _erelaciondetalle= new ERelacionadoDocumentoDetalle();
-                            _erelaciondetalle.setM_instancia(InstancaEntidad.NEW);
+                            _erelaciondetalle.setM_instancia(InstanciaEntidad.NEW);
                             _erelaciondetalle.setArt_ncodigo(_lsefacturadetalle.get(i).getArt_ncodigo());
                             _erelaciondetalle.setRde_ccantidad(_lsefacturadetalle.get(i).getDfa_ccantidad());
                             _erelaciondetalle.setRde_fvalorunitario(_lsefacturadetalle.get(i).getDfa_fvalorunitario());

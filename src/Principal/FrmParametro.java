@@ -11,7 +11,7 @@ import Negocio.BParametro;
 import Negocio.BSucursal;
 import Negocio.BVendedor;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -380,7 +380,7 @@ public class FrmParametro extends javax.swing.JInternalFrame {
         try
         {
            m_Tipoinstancia=InstanciaForm.MODIFY;
-           _eparametro.setM_instancia(InstancaEntidad.MODIFY);
+           _eparametro.setM_instancia(InstanciaEntidad.MODIFY);
            EstablecerInstancia();
         }catch(Exception e){}
     }//GEN-LAST:event_btnEditarActionPerformed
@@ -539,7 +539,7 @@ public class FrmParametro extends javax.swing.JInternalFrame {
                            _enumero=_lsnumero.get(i);
                            if(_enumero.getNum_ncodigo()==Integer.parseInt(_codigo))
                            {
-                               _enumero.setM_instancia(InstancaEntidad.DELETE);
+                               _enumero.setM_instancia(InstanciaEntidad.DELETE);
                                _lsnumero.set(i, _enumero);
                            }
                        }
@@ -564,7 +564,7 @@ public class FrmParametro extends javax.swing.JInternalFrame {
                 frmnumero =FrmNumero.getinstancia(this);
                 int _codigo=0;
                 String instancia=detalleNumero.getValueAt(_filaseleccionada, 4).toString();
-                if(instancia.equals(""+InstancaEntidad.UNCHANGUE)|| instancia.equals(""+InstancaEntidad.MODIFY))
+                if(instancia.equals(""+InstanciaEntidad.UNCHANGUE)|| instancia.equals(""+InstanciaEntidad.MODIFY))
                 {
                     _codigo=Integer.parseInt(detalleNumero.getValueAt(_filaseleccionada, 0).toString());
                     _enumero=_bnumero.AccionObtenerUnNumero(_codigo);
@@ -574,10 +574,10 @@ public class FrmParametro extends javax.swing.JInternalFrame {
                     _enumero=new ENumero();
                     _enumero.setNum_cnumero("");
                     _enumero.setNum_cserie("2");
-                    _enumero.setM_instancia(InstancaEntidad.NEW);
+                    _enumero.setM_instancia(InstanciaEntidad.NEW);
                     posicion=_filaseleccionada;
                 }
-                frmnumero.m_Tipoinstancia=instancia.equals(""+InstancaEntidad.NEW)?InstanciaForm.NEW:InstanciaForm.MODIFY;
+                frmnumero.m_Tipoinstancia=instancia.equals(""+InstanciaEntidad.NEW)?InstanciaForm.NEW:InstanciaForm.MODIFY;
                 frmnumero.m_escritorio=m_escritorio;
                 desktopSize = m_escritorio.getSize();
                 Internal = frmnumero.getSize();
@@ -745,7 +745,7 @@ public class FrmParametro extends javax.swing.JInternalFrame {
         try {
 //            if(_enumero!=null)
 //            {
-                if(_enumero.getM_instancia()==InstancaEntidad.NEW)
+                if(_enumero.getM_instancia()==InstanciaEntidad.NEW)
                 {
                     _enumero.setSuc_calias(cmbsucursal.getItemAt(cmbsucursal.getSelectedIndex()));
                     if(posicion!=-1)
@@ -834,7 +834,7 @@ public class FrmParametro extends javax.swing.JInternalFrame {
             if(m_Tipoinstancia==InstanciaForm.NEW)
             {
                 _eparametro= new EParametro();
-                _eparametro.setM_instancia(InstancaEntidad.NEW);
+                _eparametro.setM_instancia(InstanciaEntidad.NEW);
                 _eparametro.setPar_ntipocambio(Float.parseFloat(txttipocambio.getText()));
                  _eparametro.setPar_dfecha(Date.valueOf(txtfecha.getText()));
                 DisplayValue _valor=(DisplayValue)cmbsucursal.getSelectedItem();//----------------Obteniendo Sucursal

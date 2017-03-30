@@ -9,7 +9,7 @@ import AccessoDato.EDocumento;
 import AccessoDato.ENumero;
 import Negocio.BTablasSolas;
 import Utilidad.DisplayValue;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -199,13 +199,13 @@ public class FrmNumero extends JInternalFrame {
                 if(m_Tipoinstancia==InstanciaForm.NEW)
                 {
                     _enumero = new ENumero();
-                    _enumero.setM_instancia(InstancaEntidad.NEW);
+                    _enumero.setM_instancia(InstanciaEntidad.NEW);
                     GetItem();
                 }
                 else if(m_Tipoinstancia==InstanciaForm.MODIFY)
                 {
                 
-                    _enumero.setM_instancia(InstancaEntidad.MODIFY);
+                    _enumero.setM_instancia(InstanciaEntidad.MODIFY);
                     GetItem();
                 }
 //                GetItem();

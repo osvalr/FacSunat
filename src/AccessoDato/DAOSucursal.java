@@ -2,7 +2,7 @@
 package AccessoDato;
 
 import Utilidad.Conector;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class DAOSucursal implements IOperacion{
             pst.setInt(1, o);
             ResultSet _rs = pst.executeQuery();
             if(_rs.next())
-                _esucursal=(new ESucursal(_rs.getInt("suc_ncodigo"), _rs.getString("suc_cdireccion") , _rs.getInt("pai_ncodigo"),_rs.getInt("emp_ncodigo"), _rs.getInt("ubi_ncodigo"),_rs.getString("suc_calias"),_rs.getString("ubi_cdepartamento"),_rs.getString("ubi_cprovincia"),_rs.getString("ubi_cdistrito"),_rs.getString("ubi_ccoddistri"),_rs.getString("ubi_ccoddepa"),_rs.getString("ubi_codpro"),_rs.getString("pai_cnombre"),InstancaEntidad.UNCHANGUE));
+                _esucursal=(new ESucursal(_rs.getInt("suc_ncodigo"), _rs.getString("suc_cdireccion") , _rs.getInt("pai_ncodigo"),_rs.getInt("emp_ncodigo"), _rs.getInt("ubi_ncodigo"),_rs.getString("suc_calias"),_rs.getString("ubi_cdepartamento"),_rs.getString("ubi_cprovincia"),_rs.getString("ubi_cdistrito"),_rs.getString("ubi_ccoddistri"),_rs.getString("ubi_ccoddepa"),_rs.getString("ubi_codpro"),_rs.getString("pai_cnombre"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {_con.Cerrar();}
@@ -97,7 +97,7 @@ public class DAOSucursal implements IOperacion{
             pst=_con.RecibirQuer(_selectAll);
             ResultSet _rs = pst.executeQuery();
             while(_rs.next())
-                _lssucursal.add(new ESucursal(_rs.getInt("suc_ncodigo"), _rs.getString("suc_cdireccion") , _rs.getInt("pai_ncodigo"),_rs.getInt("emp_ncodigo"), _rs.getInt("ubi_ncodigo"),_rs.getString("suc_calias"),_rs.getString("ubi_cdepartamento"),_rs.getString("ubi_cprovincia"),_rs.getString("ubi_cdistrito"),_rs.getString("ubi_ccoddistri"),_rs.getString("ubi_ccoddepa"),_rs.getString("ubi_codpro"),_rs.getString("pai_cnombre"),InstancaEntidad.UNCHANGUE));
+                _lssucursal.add(new ESucursal(_rs.getInt("suc_ncodigo"), _rs.getString("suc_cdireccion") , _rs.getInt("pai_ncodigo"),_rs.getInt("emp_ncodigo"), _rs.getInt("ubi_ncodigo"),_rs.getString("suc_calias"),_rs.getString("ubi_cdepartamento"),_rs.getString("ubi_cprovincia"),_rs.getString("ubi_cdistrito"),_rs.getString("ubi_ccoddistri"),_rs.getString("ubi_ccoddepa"),_rs.getString("ubi_codpro"),_rs.getString("pai_cnombre"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {_con.Cerrar();}
@@ -115,7 +115,7 @@ public class DAOSucursal implements IOperacion{
             pst=_con.RecibirQuer(_sellectAllnoasignadas);
             ResultSet _rs = pst.executeQuery();
             while(_rs.next())
-                _lssucursal.add(new ESucursal(_rs.getInt("suc_ncodigo"), _rs.getString("suc_cdireccion") , _rs.getInt("pai_ncodigo"),_rs.getInt("emp_ncodigo"), _rs.getInt("ubi_ncodigo"),_rs.getString("suc_calias"),_rs.getString("ubi_cdepartamento"),_rs.getString("ubi_cprovincia"),_rs.getString("ubi_cdistrito"),_rs.getString("ubi_ccoddistri"),_rs.getString("ubi_ccoddepa"),_rs.getString("ubi_codpro"),_rs.getString("pai_cnombre"),InstancaEntidad.UNCHANGUE));
+                _lssucursal.add(new ESucursal(_rs.getInt("suc_ncodigo"), _rs.getString("suc_cdireccion") , _rs.getInt("pai_ncodigo"),_rs.getInt("emp_ncodigo"), _rs.getInt("ubi_ncodigo"),_rs.getString("suc_calias"),_rs.getString("ubi_cdepartamento"),_rs.getString("ubi_cprovincia"),_rs.getString("ubi_cdistrito"),_rs.getString("ubi_ccoddistri"),_rs.getString("ubi_ccoddepa"),_rs.getString("ubi_codpro"),_rs.getString("pai_cnombre"),InstanciaEntidad.UNCHANGUE));
         }
         catch(Exception e)
         {_con.Cerrar();}

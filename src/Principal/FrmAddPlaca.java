@@ -3,7 +3,7 @@ package Principal;
 
 import AccessoDato.EPlaca;
 import Negocio.BPlaca;
-import Utilidad.InstancaEntidad;
+import Utilidad.InstanciaEntidad;
 import Utilidad.InstanciaForm;
 import Utilidad.JTextFielCharLimit;
 import Utilidad.MaximoCharacter;
@@ -129,12 +129,12 @@ public class FrmAddPlaca extends javax.swing.JInternalFrame {
                 if(m_Tipoinstancia==InstanciaForm.NEW)
                 {
                     _eplaca = new EPlaca();
-                    _eplaca.setM_instancia(InstancaEntidad.NEW);
+                    _eplaca.setM_instancia(InstanciaEntidad.NEW);
                     _eplaca.setPla_cnombre(txtdescripcion.getText());
                 }
                 else if(m_Tipoinstancia==InstanciaForm.MODIFY)
                 {
-                    _eplaca.setM_instancia(InstancaEntidad.MODIFY);
+                    _eplaca.setM_instancia(InstanciaEntidad.MODIFY);
                     _eplaca.setPla_cnombre(txtdescripcion.getText());
                 }
                 this.dispose();
