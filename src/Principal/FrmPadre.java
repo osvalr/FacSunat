@@ -12,12 +12,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 public class FrmPadre extends javax.swing.JFrame {
 
    
-    public FrmPadre() {
+    public FrmPadre()  {
         initComponents();
+        try
+        {
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        }catch(Exception e)
+        {
+            System.out.println("Error:"+e.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -31,6 +39,8 @@ public class FrmPadre extends javax.swing.JFrame {
         jmArticulo = new javax.swing.JMenuItem();
         btnvendedor = new javax.swing.JMenuItem();
         btnsucursal = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        btnsalir = new javax.swing.JMenuItem();
         btnsalida = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -87,6 +97,15 @@ public class FrmPadre extends javax.swing.JFrame {
             }
         });
         fileMenu.add(btnsucursal);
+        fileMenu.add(jSeparator1);
+
+        btnsalir.setText("Salir");
+        btnsalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsalirActionPerformed(evt);
+            }
+        });
+        fileMenu.add(btnsalir);
 
         menuBar.add(fileMenu);
 
@@ -474,6 +493,10 @@ public class FrmPadre extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_mitemDocBajaActionPerformed
+
+    private void btnsalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalirActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnsalirActionPerformed
     FrmVendedor frmvendedor;
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -513,6 +536,7 @@ public class FrmPadre extends javax.swing.JFrame {
     private javax.swing.JMenuItem btnnotadebito;
     private javax.swing.JMenuItem btnparametros;
     private javax.swing.JMenu btnsalida;
+    private javax.swing.JMenuItem btnsalir;
     private javax.swing.JMenuItem btnsucursal;
     private javax.swing.JMenuItem btnvendedor;
     private javax.swing.JDesktopPane desktopPane;
@@ -521,6 +545,7 @@ public class FrmPadre extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JMenuItem jmArticulo;
     private javax.swing.JMenuItem jmCliente;
     private javax.swing.JMenuBar menuBar;

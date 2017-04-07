@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="212" pageHeight="500" whenNoDataType="AllSectionsNoDetail" columnWidth="172" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty">
+	<property name="ireport.zoom" value="3.4522712143931042"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="364"/>
+	<parameter name="idfactura" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="igv" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="valorresumen" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="firma" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select 
+	fct.fac_ncodigo,		fct.cli_ncodigo,		fct.fac_dfechaemision,
+	fct.fac_cserie,			fct.fac_cnumero,		fct.doc_ccodigo,
+	fct.mon_ncodigo,		mnd.mon_csimbolo,		doc.doc_cdescripcion,
+	fct.suc_ncodigo,		suc.suc_cdireccion,	fct.ven_ncodigo,			suc.suc_calias as suc_cdescripcion,
+	vnd.ven_cpaterno||' '||vnd.ven_materno||' '||vnd.ven_nombres as vendedor,
+
+	dft.art_ncodigo,						art.art_cdescripcion,			dft.dfa_ccantidad,
+	dft.dfa_fvalorunitario,			dft.dfa_fvalorsubtotal,			dft.dfa_fvalorventa,dft.dfa_fvalortotal,
+	dft.dfa_foexonerada,				dft.dfa_foinafecta,					dft.dfa_fdescuento,
+	afe.afe_ncodigo,						afe.afe_cdescripcion,			uni.uni_ncodigo,
+	uni.uni_cdescripcion,				cli.doi_ccodigo,					cli.cli_crazonsocial,
+	cli.cli_cnumerodoc,					did.doc_cdescripcion,			cli.cli_cdireccionfiscal,
+	emp.emp_cnombre,						emp.emp_cruc,							emp.emp_cdireccion,
+	ubi.ubi_cdepartamento||'-'||ubi.ubi_cprovincia||'-'||ubi.ubi_cdistrito as zona,
+	(select to_char(current_timestamp, 'HH12:MI:SS') as hora)
+from factura as fct
+inner join detallefactura 			as dft on dft.fac_ncodigo=fct.fac_ncodigo
+inner join cliente 							as cli on cli.cli_ncodigo=fct.cli_ncodigo
+inner join moneda 							as mnd on mnd.mon_ncodigo=fct.mon_ncodigo
+inner join documento 						as doc on doc.doc_ccodigo=fct.doc_ccodigo
+inner join sucursal 						as suc on suc.suc_ncodigo=fct.suc_ncodigo
+inner join vendedor  						as vnd on vnd.ven_ncodigo=fct.ven_ncodigo
+inner join articulo 						as art on art.art_ncodigo=dft.art_ncodigo
+inner join afectacion						as afe on afe.afe_ncodigo=dft.pve_ctipoafectacion
+inner join unidad 							as uni on uni.uni_ncodigo=dft.uni_ncodigo
+inner join documentoidentidad   as did on did.doi_ccodigo=cli.doi_ccodigo
+inner join empresa							as emp on emp.emp_ncodigo=suc.emp_ncodigo
+inner join ubigeo								as ubi on ubi.ubi_ncodigo=suc.ubi_ncodigo
+where fct.fac_ncodigo=$P!{idfactura}]]>
+	</queryString>
+	<field name="fac_ncodigo" class="java.lang.Integer"/>
+	<field name="cli_ncodigo" class="java.lang.Integer"/>
+	<field name="fac_dfechaemision" class="java.sql.Date"/>
+	<field name="fac_cserie" class="java.lang.String"/>
+	<field name="fac_cnumero" class="java.lang.String"/>
+	<field name="doc_ccodigo" class="java.lang.String"/>
+	<field name="mon_ncodigo" class="java.lang.String"/>
+	<field name="mon_csimbolo" class="java.lang.String"/>
+	<field name="doc_cdescripcion" class="java.lang.String"/>
+	<field name="suc_ncodigo" class="java.lang.Integer"/>
+	<field name="suc_cdireccion" class="java.lang.String"/>
+	<field name="ven_ncodigo" class="java.lang.Integer"/>
+	<field name="suc_cdescripcion" class="java.lang.String"/>
+	<field name="vendedor" class="java.lang.String"/>
+	<field name="art_ncodigo" class="java.lang.Integer"/>
+	<field name="art_cdescripcion" class="java.lang.String"/>
+	<field name="dfa_ccantidad" class="java.lang.Integer"/>
+	<field name="dfa_fvalorunitario" class="java.math.BigDecimal"/>
+	<field name="dfa_fvalorsubtotal" class="java.math.BigDecimal"/>
+	<field name="dfa_fvalorventa" class="java.math.BigDecimal"/>
+	<field name="dfa_fvalortotal" class="java.math.BigDecimal"/>
+	<field name="dfa_foexonerada" class="java.math.BigDecimal"/>
+	<field name="dfa_foinafecta" class="java.math.BigDecimal"/>
+	<field name="dfa_fdescuento" class="java.math.BigDecimal"/>
+	<field name="afe_ncodigo" class="java.lang.Integer"/>
+	<field name="afe_cdescripcion" class="java.lang.String"/>
+	<field name="uni_ncodigo" class="java.lang.Integer"/>
+	<field name="uni_cdescripcion" class="java.lang.String"/>
+	<field name="doi_ccodigo" class="java.lang.String"/>
+	<field name="cli_crazonsocial" class="java.lang.String"/>
+	<field name="cli_cnumerodoc" class="java.lang.String"/>
+	<field name="cli_cdireccionfiscal" class="java.lang.String"/>
+	<field name="emp_cnombre" class="java.lang.String"/>
+	<field name="emp_cruc" class="java.lang.String"/>
+	<field name="emp_cdireccion" class="java.lang.String"/>
+	<field name="zona" class="java.lang.String"/>
+	<field name="hora" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="154" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="172" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_cnombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="14" width="172" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_cdireccion}.trim()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="37" width="172" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{suc_cdescripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="52" width="172" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{suc_cdireccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="66" width="172" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{zona}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="80" width="172" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["R.U.C. :"+$F{emp_cruc}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="95" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="96" width="172" height="11"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[FACTURA ELECTRONICA]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="107" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="58" y="108" width="46" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="108" width="68" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fac_cserie}+"-"+$F{fac_cnumero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="123" width="172" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SEÑOR(ES):"+$F{cli_crazonsocial}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="138" width="172" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RUC/DNI:"+$F{cli_cnumerodoc}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="153" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="1" y="109" width="48" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{fac_dfechaemision}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="22" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="23" y="0" width="35" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Unidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="58" y="0" width="51" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Descrip.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="0" width="30" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Importe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="109" y="0" width="30" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[P. Unit.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="12" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="247" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="172" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Vendedor:"+$F{vendedor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="16" width="49" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Visa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[TOTAL DESCUENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="44" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[  OP. EXONERADAS
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="58" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[  OP. INAFECTA
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="72" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[  OP. GRAVADA
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="86" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[  OP. GRATUITAS ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="100" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[OTROS CARGOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="114" width="49" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[IGV]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="48" y="114" width="30" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{igv}+" %"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="130" width="109" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[IMPORTE TOTAL]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="15" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="145" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="216" width="172" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" isStrikeThrough="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Representacion Impresa de Factura Electrica]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="0" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="129" width="172" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</summary>
+</jasperReport>
